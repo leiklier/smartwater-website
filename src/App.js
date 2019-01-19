@@ -1,14 +1,15 @@
-import React, { Component} from "react";
+import React, { Component} from 'react'
 import "./App.css";
 
-import { Pagination, Button } from 'antd';
+import Header from './Header.js'
+import Main from './Main.js'
 
-class App extends Component{
+class App extends Component {
   render(){
     return(
       <div className="App">
-        <Pagination defaultCurrent={1} total={50} />
-        <Button type="primary">Primary</Button>
+        <Header />
+        <Main />
       </div>
     );
   }
