@@ -1,18 +1,22 @@
-import React, { Component} from 'react'
-import "./App.css";
+import React, { Component } from 'react'
+import './App.css'
 
-import Header from './Header.js'
+import { Layout } from 'antd'
+
+import Navigationbar from './components/Navigationbar'
 import Main from './Main.js'
 
 class App extends Component {
-  render(){
-    return(
-      <div className="App">
-        <Header />
-        <Main />
-      </div>
-    );
-  }
+	render() {
+		return (
+			<div className="App">
+				<Layout>
+					<Navigationbar />
+					<Main />
+				</Layout>
+			</div>
+		)
+	}
 }
 
-export default App;
+export default App

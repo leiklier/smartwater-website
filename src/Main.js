@@ -1,18 +1,23 @@
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
 
-import Home from './routes/Home.js'
-import About from './routes/About.js'
+import { Layout } from 'antd'
+const { Content } = Layout
+
+import Home from './components/Home'
+import About from './components/About'
+import Dashboard from './components/Dashboard'
 
 class Main extends Component {
   render() {
     return(
-      <main>
+      <Content style={{ padding: '0 50px'}}>
         <Switch>
           <Route exact path="/" component={Home} />
           <Route path="/about" component={About} />
+          <Route path="/dashboard" component={Dashboard} />
         </Switch>
-      </main>
+      </Content>
     );
   }
 }
