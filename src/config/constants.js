@@ -7,6 +7,8 @@ export const MEASUREMENT_TYPES = [
 	'CONDUCTIVITY'
 ]
 
+export const VALID_AGGREGATES = ['HIGHEST', 'LOWEST', 'AVERAGE']
+
 export const apiConfig = {
 	host: 'vannovervakning.com:5000/',
 	basePath: 'api/v1/',
