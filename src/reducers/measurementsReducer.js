@@ -1,3 +1,11 @@
+import { cloneDeep } from 'lodash'
+
+import {
+	FETCH_MEASUREMENTS_INTERVAL,
+	FETCH_MEASUREMENTS_INTERVAL_FULFILLED,
+	FETCH_MEASUREMENTS_INTERVAL_REJECTED
+} from '../actions/measurementsActionTypes'
+
 import { MEASUREMENT_TYPES, VALID_AGGREGATES } from '../config/constants'
 
 export default function reducer(
@@ -39,7 +47,7 @@ export default function reducer(
 				// Data
 				measurements[type].firstTimestamp = Date.now()
 				measurements[type].lastTimestamp = Date.now()
-				measurements[type].data = new Array()
+				measurements[type].data = new Object()
 				measurements[type].fetching = false // boolean
 				measurements[type].fetched = false // boolean
 				measurements[type].error = null // error object
@@ -49,14 +57,34 @@ export default function reducer(
 	},
 	action
 ) {
+	var newState = cloneDeep(state)
+
 	switch (action.type) {
-	case 'FETCH_MEASUREMENTS': {
-		return { ...state, fetching: true }
+	case FETCH_MEASUREMENTS_INTERVAL: {
+		for (const type of action.payload.types) {
+			newState[type].fetching = true
+		}
+		return newState
 	}
-	case 'FETCH_MEASUREMENTS_REJECTED': {
+	case FETCH_MEASUREMENTS_INTERVAL_FULFILLED: {
+		for (const measurementType in action.payload.data) {
+			newState[measurementType].fetching = false
+			newState[measurementType].fetched = true
+			newState[measurementType].data = {
+				...newState[measurementType].data,
+				...action.payload.data
+			}
+		}
+		return newState
+	}
+	case FETCH_MEASUREMENTS_INTERVAL_REJECTED: {
+		for (const measurementType in action.payload.types) {
+			newState[measurementType].fetching = false
+			newState[measurementType].fetched = false
+			newState[measurementType].error = action.payload.error
+		}
 		return { ...state, fetching: false, error: action.payload }
 	}
 	}
-
-	return state
+	return newState
 }
