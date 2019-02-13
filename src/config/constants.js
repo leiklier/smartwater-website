@@ -10,7 +10,7 @@ export const MEASUREMENT_TYPES = [
 export const VALID_AGGREGATES = ['HIGHEST', 'LOWEST', 'AVERAGE']
 
 export const apiConfig = {
-	host: 'vannovervakning.com:5000/',
+	host: 'http://vannovervakning.com:5000/',
 	basePath: 'api/v1/',
 	measurementsPath: 'measurements/',
 	wsSupport: true

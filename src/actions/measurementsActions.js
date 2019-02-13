@@ -28,7 +28,7 @@ export function fetchMeasurementsInterval(args) {
 		}
 
 		if (types) {
-			queryUrl += `?types=${types.split(',')}`
+			queryUrl += `?types=${types.join(',')}`
 		}
 
 		axios

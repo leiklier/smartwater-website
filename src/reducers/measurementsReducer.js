@@ -63,6 +63,7 @@ export default function reducer(
 	case FETCH_MEASUREMENTS_INTERVAL: {
 		for (const type of action.payload.types) {
 			newState[type].fetching = true
+			newState[type].fetched = false
 		}
 		return newState
 	}
@@ -72,18 +73,18 @@ export default function reducer(
 			newState[measurementType].fetched = true
 			newState[measurementType].data = {
 				...newState[measurementType].data,
-				...action.payload.data
+				...action.payload.data[measurementType]
 			}
 		}
 		return newState
 	}
 	case FETCH_MEASUREMENTS_INTERVAL_REJECTED: {
-		for (const measurementType in action.payload.types) {
+		for (const measurementType of action.payload.types) {
 			newState[measurementType].fetching = false
 			newState[measurementType].fetched = false
 			newState[measurementType].error = action.payload.error
 		}
-		return { ...state, fetching: false, error: action.payload }
+		return newState
 	}
 	}
 	return newState
