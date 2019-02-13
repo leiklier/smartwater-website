@@ -10,6 +10,7 @@
   "devDependencies": {
     "@babel/cli": "7.1.0",
     "@babel/core": "7.1.0",
+    "@babel/plugin-proposal-decorators": "^7.3.0",
     "@babel/preset-env": "7.1.0",
     "@babel/preset-react": "7.0.0",
     "babel-loader": "8.0.2",
@@ -24,6 +25,7 @@
     "antd": "^3.12.3",
     "axios": "^0.18.0",
     "connected-react-router": "^6.3.1",
+    "lodash": "^4.17.11",
     "react": "16.5.2",
     "react-dom": "16.5.2",
     "react-redux": "^6.0.0",
