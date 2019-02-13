@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom'
 
 import { connect } from 'react-redux'
 
-import { fetchMeasurementsInterval } from '../actions/measurementsActions'
+import {
+	fetchMeasurementsInterval,
+	fetchMeasurementsLast
+} from '../actions/measurementsActions'
 
 @connect(store => {
 	return {
@@ -17,6 +20,12 @@ class Home extends Component {
 				nodeId: 1,
 				types: ['BATTERY', 'CONDUCTIVITY'],
 				fromTimestamp: 1500072925529
+			})
+		)
+		this.props.dispatch(
+			fetchMeasurementsLast({
+				nodeId: 1,
+				types: ['BATTERY']
 			})
 		)
 	}

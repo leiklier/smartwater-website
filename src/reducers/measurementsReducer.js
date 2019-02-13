@@ -3,7 +3,10 @@ import { cloneDeep } from 'lodash'
 import {
 	FETCH_MEASUREMENTS_INTERVAL,
 	FETCH_MEASUREMENTS_INTERVAL_FULFILLED,
-	FETCH_MEASUREMENTS_INTERVAL_REJECTED
+	FETCH_MEASUREMENTS_INTERVAL_REJECTED,
+	FETCH_MEASUREMENTS_LAST,
+	FETCH_MEASUREMENTS_LAST_FULFILLED,
+	FETCH_MEASUREMENTS_LAST_REJECTED
 } from '../actions/measurementsActionTypes'
 
 import { MEASUREMENT_TYPES, VALID_AGGREGATES } from '../config/constants'
@@ -21,9 +24,9 @@ export default function reducer(
 				measurements[type].aggregates = (() => {
 					var aggregates = new Object()
 					const intervals = [
-						{ name: 'last_hour', duration: 1, textDisplay: 'Last Hour' },
-						{ name: 'last_day', duration: 1, textDisplay: 'Last Day' },
-						{ name: 'last_week', duration: 1, textDisplay: 'Last Week' }
+						{ name: 'lastHour', duration: 1, textDisplay: 'Last Hour' },
+						{ name: 'lastDay', duration: 1, textDisplay: 'Last Day' },
+						{ name: 'lastWeek', duration: 1, textDisplay: 'Last Week' }
 					]
 
 					for (const interval of intervals) {
@@ -34,7 +37,7 @@ export default function reducer(
 						for (const valid_aggregate of VALID_AGGREGATES) {
 							aggregates[interval.name][valid_aggregate] = {
 								value: false, // number
-								lastUpdated: false, // timestamp
+								lastUpdated: null, // timestamp
 								fetching: false, // boolean
 								fetched: false, // boolean
 								error: null // error object
@@ -44,13 +47,26 @@ export default function reducer(
 					return aggregates
 				})()
 
-				// Data
-				measurements[type].firstTimestamp = Date.now()
-				measurements[type].lastTimestamp = Date.now()
-				measurements[type].data = new Object()
-				measurements[type].fetching = false // boolean
-				measurements[type].fetched = false // boolean
-				measurements[type].error = null // error object
+				measurements[type].graphView = {
+					data: new Array(),
+					fromTimestamp: false,
+					toTimestamp: false,
+					fetching: false,
+					fetched: false,
+					error: null
+				}
+
+				measurements[type].lastMeasurement = {
+					value: false,
+					timeCreated: false,
+					position: {
+						lng: false,
+						lat: false
+					},
+					fetching: false,
+					fetched: false,
+					error: null
+				}
 			}
 			return measurements
 		})()
@@ -62,29 +78,58 @@ export default function reducer(
 	switch (action.type) {
 	case FETCH_MEASUREMENTS_INTERVAL: {
 		for (const type of action.payload.types) {
-			newState[type].fetching = true
-			newState[type].fetched = false
+			newState[type].graphView.fetching = true
+			newState[type].graphView.fetched = false
 		}
 		return newState
 	}
 	case FETCH_MEASUREMENTS_INTERVAL_FULFILLED: {
-		for (const measurementType in action.payload.data) {
-			newState[measurementType].fetching = false
-			newState[measurementType].fetched = true
-			newState[measurementType].data = {
-				...newState[measurementType].data,
-				...action.payload.data[measurementType]
+		const { data, fromTimestamp, toTimestamp } = action.payload
+		for (const type in action.payload.data) {
+			newState[type].graphView = {
+				data: data[type],
+				fromTimestamp: fromTimestamp,
+				toTimestamp: toTimestamp,
+				fetching: false,
+				fetched: true
 			}
 		}
 		return newState
 	}
 	case FETCH_MEASUREMENTS_INTERVAL_REJECTED: {
-		for (const measurementType of action.payload.types) {
-			newState[measurementType].fetching = false
-			newState[measurementType].fetched = false
-			newState[measurementType].error = action.payload.error
+		for (const type of action.payload.types) {
+			newState[type].graphView.fetching = false
+			newState[type].graphView.fetched = false
+			newState[type].graphView.error = action.payload.error
 		}
 		return newState
+	}
+	case FETCH_MEASUREMENTS_LAST: {
+		for (const type of action.payload.types) {
+			newState[type].lastMeasurement.fetching = true
+			newState[type].lastMeasurement.fetched = false
+		}
+		return newState
+	}
+	case FETCH_MEASUREMENTS_LAST_FULFILLED: {
+		const { data } = action.payload
+		for (const type in data) {
+			newState[type].lastMeasurement = {
+				...newState[type].lastMeasurement,
+				...data[type][0]
+			}
+			newState[type].lastMeasurement.fetched = true
+			newState[type].lastMeasurement.fetching = false
+		}
+		return newState
+	}
+	case FETCH_MEASUREMENTS_LAST_REJECTED: {
+		const { error, types } = action.payload
+		for (const type of types) {
+			newState[type].lastMeasurement.fetched = false
+			newState[type].lastMeasurement.fetching = false
+			newState[type].lastMeasurement.error = error
+		}
 	}
 	}
 	return newState

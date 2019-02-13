@@ -5,7 +5,10 @@ import { MEASUREMENT_TYPES } from '../config/constants'
 import {
 	FETCH_MEASUREMENTS_INTERVAL,
 	FETCH_MEASUREMENTS_INTERVAL_FULFILLED,
-	FETCH_MEASUREMENTS_INTERVAL_REJECTED
+	FETCH_MEASUREMENTS_INTERVAL_REJECTED,
+	FETCH_MEASUREMENTS_LAST,
+	FETCH_MEASUREMENTS_LAST_FULFILLED,
+	FETCH_MEASUREMENTS_LAST_REJECTED
 } from './measurementsActionTypes'
 
 export function fetchMeasurementsInterval(args) {
@@ -34,27 +37,52 @@ export function fetchMeasurementsInterval(args) {
 		axios
 			.get(queryUrl)
 			.then(response => {
-				var data = new Object()
-				for (const type in response.data.data) {
-					data[type] = new Object()
-					for (const measurement of response.data.data[type]) {
-						data[type][measurement.timeCreated] = {
-							value: measurement.value,
-							position: measurement.position
-						}
-					}
-				}
 				dispatch({
 					type: FETCH_MEASUREMENTS_INTERVAL_FULFILLED,
 					payload: {
 						nodeId: response.data.nodeId,
-						data: data
+						data: response.data.data,
+						fromTimestamp: fromTimestamp,
+						toTimestamp: toTimestamp
 					}
 				})
 			})
 			.catch(err => {
 				dispatch({
 					type: FETCH_MEASUREMENTS_INTERVAL_REJECTED,
+					payload: { error: err, types: types }
+				})
+			})
+	}
+}
+
+export function fetchMeasurementsLast(args) {
+	var { nodeId, types } = args
+	if (!types) {
+		types = MEASUREMENT_TYPES
+	}
+	return function(dispatch) {
+		dispatch({ type: FETCH_MEASUREMENTS_LAST, payload: { types: types } })
+		var queryUrl =
+			apiConfig.host +
+			apiConfig.basePath +
+			apiConfig.measurementsPath +
+			`${nodeId}/`
+
+		if (types) {
+			queryUrl += `?types=${types.join(',')}`
+		}
+		axios
+			.get(queryUrl)
+			.then(response => {
+				dispatch({
+					type: FETCH_MEASUREMENTS_LAST_FULFILLED,
+					payload: response.data
+				})
+			})
+			.catch(err => {
+				dispatch({
+					type: FETCH_MEASUREMENTS_LAST_REJECTED,
 					payload: { error: err, types: types }
 				})
 			})
