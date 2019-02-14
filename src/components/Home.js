@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import {
+	pushMeasurement,
 	fetchMeasurementsInterval,
 	fetchMeasurementsLast,
 	fetchMeasurementsAggregate
@@ -16,6 +17,7 @@ import {
 })
 class Home extends Component {
 	componentWillMount() {
+		this.props.dispatch(pushMeasurement(1))
 		this.props.dispatch(
 			fetchMeasurementsInterval({
 				nodeId: 1,

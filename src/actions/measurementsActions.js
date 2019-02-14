@@ -7,6 +7,7 @@ import {
 	MEASUREMENT_INTERVALS
 } from '../config/constants'
 import {
+	PUSH_MEASUREMENT,
 	FETCH_MEASUREMENTS_INTERVAL,
 	FETCH_MEASUREMENTS_INTERVAL_FULFILLED,
 	FETCH_MEASUREMENTS_INTERVAL_REJECTED,
@@ -18,6 +19,15 @@ import {
 	FETCH_MEASUREMENTS_AGGREGATE_REJECTED
 } from './measurementsActionTypes'
 
+export function pushMeasurement(nodeId, initialState = false) {
+	return function(dispatch) {
+		dispatch({
+			type: PUSH_MEASUREMENT,
+			payload: { nodeId: nodeId, initialState: initialState }
+		})
+	}
+}
+
 export function fetchMeasurementsInterval(args) {
 	var { nodeId, types, fromTimestamp, toTimestamp } = args
 	if (!types) {
@@ -25,7 +35,10 @@ export function fetchMeasurementsInterval(args) {
 	}
 
 	return function(dispatch) {
-		dispatch({ type: FETCH_MEASUREMENTS_INTERVAL, payload: { types: types } })
+		dispatch({
+			type: FETCH_MEASUREMENTS_INTERVAL,
+			payload: { nodeId: nodeId, types: types }
+		})
 		var queryUrl =
 			apiConfig.host +
 			apiConfig.basePath +
@@ -57,7 +70,7 @@ export function fetchMeasurementsInterval(args) {
 			.catch(err => {
 				dispatch({
 					type: FETCH_MEASUREMENTS_INTERVAL_REJECTED,
-					payload: { error: err, types: types }
+					payload: { nodeId: nodeId, error: err, types: types }
 				})
 			})
 	}
@@ -69,7 +82,10 @@ export function fetchMeasurementsLast(args) {
 		types = MEASUREMENT_TYPES
 	}
 	return function(dispatch) {
-		dispatch({ type: FETCH_MEASUREMENTS_LAST, payload: { types: types } })
+		dispatch({
+			type: FETCH_MEASUREMENTS_LAST,
+			payload: { nodeId: nodeId, types: types }
+		})
 		var queryUrl =
 			apiConfig.host +
 			apiConfig.basePath +
@@ -84,13 +100,13 @@ export function fetchMeasurementsLast(args) {
 			.then(response => {
 				dispatch({
 					type: FETCH_MEASUREMENTS_LAST_FULFILLED,
-					payload: response.data
+					payload: { nodeId: nodeId, data: response.data.data }
 				})
 			})
 			.catch(err => {
 				dispatch({
 					type: FETCH_MEASUREMENTS_LAST_REJECTED,
-					payload: { error: err, types: types }
+					payload: { nodeId: nodeId, error: err, types: types }
 				})
 			})
 	}
@@ -108,6 +124,7 @@ export function fetchMeasurementsAggregate(args) {
 		dispatch({
 			type: FETCH_MEASUREMENTS_AGGREGATE,
 			payload: {
+				nodeId: nodeId,
 				types: types,
 				intervalName: intervalName,
 				aggregate: aggregate
@@ -128,7 +145,7 @@ export function fetchMeasurementsAggregate(args) {
 				dispatch({
 					type: FETCH_MEASUREMENTS_AGGREGATE_FULFILLED,
 					payload: {
-						nodeId: response.data.nodeId,
+						nodeId: nodeId,
 						data: response.data.data,
 						intervalName: intervalName,
 						aggregate: aggregate,
@@ -141,6 +158,7 @@ export function fetchMeasurementsAggregate(args) {
 				dispatch({
 					type: FETCH_MEASUREMENTS_AGGREGATE_REJECTED,
 					payload: {
+						nodeId: nodeId,
 						error: err,
 						intervalName: intervalName,
 						aggregate: aggregate,
