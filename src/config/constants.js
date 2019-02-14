@@ -15,3 +15,18 @@ export const apiConfig = {
 	measurementsPath: 'measurements/',
 	wsSupport: true
 }
+
+export const MEASUREMENT_INTERVALS = {
+	lastHour: {
+		duration: 60 * 60,
+		textDisplay: 'Last Hour'
+	},
+	lastDay: {
+		duration: 60 * 60 * 24,
+		textDisplay: 'Last Day'
+	},
+	lastWeek: {
+		duration: 60 * 60 * 24 * 7,
+		textDisplay: 'Last Week'
+	}
+}

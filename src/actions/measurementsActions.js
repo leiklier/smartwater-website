@@ -1,14 +1,21 @@
 import axios from 'axios'
 
 import { apiConfig } from '../config/constants.js'
-import { MEASUREMENT_TYPES } from '../config/constants'
+import {
+	MEASUREMENT_TYPES,
+	VALID_AGGREGATES,
+	MEASUREMENT_INTERVALS
+} from '../config/constants'
 import {
 	FETCH_MEASUREMENTS_INTERVAL,
 	FETCH_MEASUREMENTS_INTERVAL_FULFILLED,
 	FETCH_MEASUREMENTS_INTERVAL_REJECTED,
 	FETCH_MEASUREMENTS_LAST,
 	FETCH_MEASUREMENTS_LAST_FULFILLED,
-	FETCH_MEASUREMENTS_LAST_REJECTED
+	FETCH_MEASUREMENTS_LAST_REJECTED,
+	FETCH_MEASUREMENTS_AGGREGATE,
+	FETCH_MEASUREMENTS_AGGREGATE_FULFILLED,
+	FETCH_MEASUREMENTS_AGGREGATE_REJECTED
 } from './measurementsActionTypes'
 
 export function fetchMeasurementsInterval(args) {
@@ -84,6 +91,61 @@ export function fetchMeasurementsLast(args) {
 				dispatch({
 					type: FETCH_MEASUREMENTS_LAST_REJECTED,
 					payload: { error: err, types: types }
+				})
+			})
+	}
+}
+
+export function fetchMeasurementsAggregate(args) {
+	var { nodeId, intervalName, types, aggregate } = args
+	const fromTimestamp =
+		Date.now() - MEASUREMENT_INTERVALS[intervalName].duration
+	if (!types) {
+		types = MEASUREMENT_TYPES
+	}
+
+	return function(dispatch) {
+		dispatch({
+			type: FETCH_MEASUREMENTS_AGGREGATE,
+			payload: {
+				types: types,
+				intervalName: intervalName,
+				aggregate: aggregate
+			}
+		})
+		var queryUrl =
+			apiConfig.host +
+			apiConfig.basePath +
+			apiConfig.measurementsPath +
+			`${nodeId}/` +
+			`${fromTimestamp}/` +
+			`?aggregate=${aggregate}` +
+			`&types=${types.join(',')}`
+
+		axios
+			.get(queryUrl)
+			.then(response => {
+				dispatch({
+					type: FETCH_MEASUREMENTS_AGGREGATE_FULFILLED,
+					payload: {
+						nodeId: response.data.nodeId,
+						data: response.data.data,
+						intervalName: intervalName,
+						aggregate: aggregate,
+						types: types,
+						fetchedTimestamp: Date.now()
+					}
+				})
+			})
+			.catch(err => {
+				dispatch({
+					type: FETCH_MEASUREMENTS_AGGREGATE_REJECTED,
+					payload: {
+						error: err,
+						intervalName: intervalName,
+						aggregate: aggregate,
+						types: types
+					}
 				})
 			})
 	}

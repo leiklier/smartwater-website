@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 
 import {
 	fetchMeasurementsInterval,
-	fetchMeasurementsLast
+	fetchMeasurementsLast,
+	fetchMeasurementsAggregate
 } from '../actions/measurementsActions'
 
 @connect(store => {
@@ -26,6 +27,14 @@ class Home extends Component {
 			fetchMeasurementsLast({
 				nodeId: 1,
 				types: ['BATTERY']
+			})
+		)
+		this.props.dispatch(
+			fetchMeasurementsAggregate({
+				nodeId: 1,
+				intervalName: 'lastWeek',
+				types: ['BATTERY'],
+				aggregate: 'HIGHEST'
 			})
 		)
 	}

@@ -6,8 +6,13 @@ import {
 	FETCH_MEASUREMENTS_INTERVAL_REJECTED,
 	FETCH_MEASUREMENTS_LAST,
 	FETCH_MEASUREMENTS_LAST_FULFILLED,
-	FETCH_MEASUREMENTS_LAST_REJECTED
+	FETCH_MEASUREMENTS_LAST_REJECTED,
+	FETCH_MEASUREMENTS_AGGREGATE,
+	FETCH_MEASUREMENTS_AGGREGATE_FULFILLED,
+	FETCH_MEASUREMENTS_AGGREGATE_REJECTED
 } from '../actions/measurementsActionTypes'
+
+import { MEASUREMENT_INTERVALS } from '../config/constants'
 
 import { MEASUREMENT_TYPES, VALID_AGGREGATES } from '../config/constants'
 
@@ -23,19 +28,14 @@ export default function reducer(
 				// Aggregates
 				measurements[type].aggregates = (() => {
 					var aggregates = new Object()
-					const intervals = [
-						{ name: 'lastHour', duration: 1, textDisplay: 'Last Hour' },
-						{ name: 'lastDay', duration: 1, textDisplay: 'Last Day' },
-						{ name: 'lastWeek', duration: 1, textDisplay: 'Last Week' }
-					]
 
-					for (const interval of intervals) {
-						aggregates[interval.name] = {
-							duration: interval.duration,
-							textDisplay: interval.textDisplay
+					for (const interval in MEASUREMENT_INTERVALS) {
+						aggregates[interval] = {
+							duration: MEASUREMENT_INTERVALS[interval].duration,
+							textDisplay: MEASUREMENT_INTERVALS[interval].textDisplay
 						}
 						for (const valid_aggregate of VALID_AGGREGATES) {
-							aggregates[interval.name][valid_aggregate] = {
+							aggregates[interval][valid_aggregate] = {
 								value: false, // number
 								lastUpdated: null, // timestamp
 								fetching: false, // boolean
@@ -80,6 +80,7 @@ export default function reducer(
 		for (const type of action.payload.types) {
 			newState[type].graphView.fetching = true
 			newState[type].graphView.fetched = false
+			newState[type].graphView.error = null
 		}
 		return newState
 	}
@@ -130,6 +131,45 @@ export default function reducer(
 			newState[type].lastMeasurement.fetching = false
 			newState[type].lastMeasurement.error = error
 		}
+		return newState
+	}
+	case FETCH_MEASUREMENTS_AGGREGATE: {
+		const { types, intervalName, aggregate } = action.payload
+		for (const type of types) {
+			newState[type].aggregates[intervalName][aggregate].fetching = true
+			newState[type].aggregates[intervalName][aggregate].fetched = false
+			newState[type].aggregates[intervalName][aggregate].error = null
+		}
+		return newState
+	}
+	case FETCH_MEASUREMENTS_AGGREGATE_FULFILLED: {
+		const {
+			nodeId,
+			data,
+			intervalName,
+			aggregate,
+			types,
+			fetchedTimestamp
+		} = action.payload
+		for (const type of types) {
+			newState[type].aggregates[intervalName][aggregate].fetching = false
+			newState[type].aggregates[intervalName][aggregate].fetched = true
+			newState[type].aggregates[intervalName][aggregate].value =
+					typeof data[type] !== 'undefined' ? data[type][0].value : false
+			newState[type].aggregates[intervalName][
+				aggregate
+			].lastUpdated = fetchedTimestamp
+		}
+		return newState
+	}
+	case FETCH_MEASUREMENTS_AGGREGATE_REJECTED: {
+		const { error, intervalName, aggregate, types } = action.payload
+		for (const type of types) {
+			newState[type].aggregates[intervalName][aggregate].fetching = false
+			newState[type].aggregates[intervalName][aggregate].fetched = false
+			newState[type].aggregates[intervalName][aggregate].error = error
+		}
+		return newState
 	}
 	}
 	return newState
