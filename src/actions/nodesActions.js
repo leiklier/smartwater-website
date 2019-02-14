@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import { pushMeasurement } from './measurementsActions'
+
 import { apiConfig } from '../config/constants'
 import {
 	FETCH_NODES,
@@ -17,10 +19,14 @@ export function fetchNodes(args = {}) {
 		axios
 			.get(queryUrl)
 			.then(response => {
+				const nodes = response.data
 				dispatch({
 					type: FETCH_NODES_FULFILLED,
-					payload: response.data
+					payload: nodes
 				})
+				for (const nodeId in nodes) {
+					dispatch(pushMeasurement(nodeId))
+				}
 			})
 			.catch(err => {
 				dispatch({

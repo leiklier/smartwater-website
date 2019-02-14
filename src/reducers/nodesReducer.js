@@ -1,6 +1,5 @@
 import { cloneDeep } from 'lodash'
 
-import { pushMeasurement } from '../actions/measurementsActions'
 import {
 	FETCH_NODES,
 	FETCH_NODES_FULFILLED,
@@ -34,10 +33,6 @@ export default function(
 			fetching: false,
 			fetched: true
 		}
-		// for (const nodeId in newNodes) {
-		// 	// Does not currently work
-		// 	pushMeasurement(nodeId)
-		// }
 		break
 	}
 	case FETCH_NODES_REJECTED: {
