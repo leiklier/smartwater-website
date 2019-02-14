@@ -13,6 +13,7 @@ export const apiConfig = {
 	host: 'http://vannovervakning.com:5000/',
 	basePath: 'api/v1/',
 	measurementsPath: 'measurements/',
+	nodesPath: 'nodes/',
 	wsSupport: true
 }
 
