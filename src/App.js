@@ -10,7 +10,7 @@ class App extends Component {
 	render() {
 		return (
 			<div className="App" style={{ height: '100%' }}>
-				<Layout>
+				<Layout style={{ height: '100%' }}>
 					<Navigationbar />
 					<Main />
 				</Layout>
