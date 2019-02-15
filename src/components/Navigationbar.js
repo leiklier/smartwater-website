@@ -8,30 +8,31 @@ const { Header } = Layout
 @connect(store => {
 	// Gets routed to this.props
 	return {
-		pageVisiting: store.router.location.pathname
+		pageVisiting: `/${store.router.location.pathname.split('/')[1]}`
 	}
 })
 class Navigationbar extends Component {
 	render() {
+		console.log(this.props.pageVisiting)
 		const { pageVisiting } = this.props
 		return (
-				<Header style={{ zIndex: 1, width: '100%', padding: '0' }}>
-					<Menu
-						mode="horizontal"
-						style={{ lineHeight: '64px', width: '100%' }}
-						selectedKeys={[pageVisiting]}
-					>
-						<Menu.Item key="/">
-							<Link to="/">Home</Link>
-						</Menu.Item>
-						<Menu.Item key="/dashboard">
-							<Link to="/dashboard">Dashboard</Link>
-						</Menu.Item>
-						<Menu.Item key="/about">
-							<Link to="/about">About</Link>
-						</Menu.Item>
-					</Menu>
-				</Header>
+			<Header style={{ zIndex: 1, width: '100%', padding: '0' }}>
+				<Menu
+					mode="horizontal"
+					style={{ lineHeight: '64px', width: '100%' }}
+					selectedKeys={[pageVisiting]}
+				>
+					<Menu.Item key="/">
+						<Link to="/">Home</Link>
+					</Menu.Item>
+					<Menu.Item key="/dashboard">
+						<Link to="/dashboard">Dashboard</Link>
+					</Menu.Item>
+					<Menu.Item key="/about">
+						<Link to="/about">About</Link>
+					</Menu.Item>
+				</Menu>
+			</Header>
 		)
 	}
 }

@@ -9,17 +9,17 @@ import About from './components/About'
 import Dashboard from './components/Dashboard'
 
 class Main extends Component {
-  render() {
-    return(
-      <Content style={{ padding: '0 50px'}}>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/about" component={About} />
-          <Route path="/dashboard" component={Dashboard} />
-        </Switch>
-      </Content>
-    );
-  }
+	render() {
+		return (
+			<Content style={{ padding: 0 }}>
+				<Switch>
+					<Route exact path="/" component={Home} />
+					<Route path="/about" component={About} />
+					<Route path="/dashboard" component={Dashboard} />
+				</Switch>
+			</Content>
+		)
+	}
 }
 
 export default Main
