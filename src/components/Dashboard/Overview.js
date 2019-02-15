@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
+import NodeCard from './NodeCard'
+
 import {
 	pushMeasurement,
 	fetchMeasurementsLast,
@@ -25,9 +27,18 @@ class Overview extends Component {
 		for (const nodeId in nodes) {
 			if (!measurements[nodeId]) this.props.dispatch(pushMeasurement(nodeId))
 		}
-  }
+	}
 	render() {
-		return <div>Hello from overview!</div>
+		const { nodes, fetchingNodes, fetchedNodes } = this.props
+		return (
+			<div>
+				{fetchedNodes
+					? Object.keys(nodes).map(nodeId => {
+							return <NodeCard nodeId={nodeId} />
+					  })
+					: 'Not Loaded'}
+			</div>
+		)
 	}
 }
 
