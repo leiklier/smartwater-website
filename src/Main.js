@@ -11,7 +11,7 @@ import Dashboard from './components/Dashboard'
 class Main extends Component {
 	render() {
 		return (
-			<Content style={{ padding: 0 }}>
+			<Content style={{ padding: 0, height: '100%' }}>
 				<Switch>
 					<Route exact path="/" component={Home} />
 					<Route path="/about" component={About} />

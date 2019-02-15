@@ -1,34 +1,55 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 
 import { Menu } from 'antd'
 const { SubMenu } = Menu
 
+import { connect } from 'react-redux'
+
+@connect(store => {
+	return {
+		pageVisiting: `/${store.router.location.pathname.split('/')[1]}`,
+		viewVisiting: store.router.location.pathname.split('/')[2]
+			? store.router.location.pathname.split('/')[3]
+				? `/${store.router.location.pathname.split('/')[2]}/${
+						store.router.location.pathname.split('/')[3]
+				  }`
+				: `/${store.router.location.pathname.split('/')[2]}`
+			: '/overview'
+	}
+})
 class Aside extends Component {
 	render() {
-		var nodesObject = this.props.nodes
-		var nodes = { data: {} },
-			fetching = false,
-			fetched = false,
-			error = null
-		for (let nodeId in nodesObject) {
-			if (nodeId === 'meta') {
-				const { fetching, fetched, error } = nodesObject[nodeId]
-				nodes['meta'] = {
-					fetching,
-					fetched,
-					error
-				}
-			} else {
-				nodes['data'][nodeId] = { ...nodesObject[nodeId] }
-			}
-		}
+		const {
+			viewVisiting,
+			pageVisiting,
+			nodes,
+			fetching,
+			fetched,
+			error
+		} = this.props
 		return (
-			<Menu style={{ width: 256 }} theme="dark" mode="inline">
-				<Menu.Item key="overView">Overview</Menu.Item>
-				<SubMenu key="nodeView" title="NodeView">
-					{Object.keys(nodes.data).map(nodeId => {
-						return <Menu.Item key={nodeId}>{nodes.data[nodeId].name}</Menu.Item>
-					})}
+			<Menu
+				style={{ width: 256, height: '100%' }}
+				theme="dark"
+				mode="inline"
+				selectedKeys={[`${pageVisiting}${viewVisiting}`]}
+			>
+				<Menu.Item key={`${pageVisiting}/overview`}>
+					<Link to={pageVisiting}>Overview</Link>
+				</Menu.Item>
+				<SubMenu key={`${pageVisiting}/nodeview`} title="NodeView">
+					{fetched
+						? Object.keys(nodes).map(nodeId => {
+								return (
+									<Menu.Item key={`${pageVisiting}/nodeview/${nodeId}`}>
+										<Link to={`${pageVisiting}/nodeview/${nodeId}`}>
+											{nodes[nodeId].name}
+										</Link>
+									</Menu.Item>
+								)
+						  })
+						: false}
 				</SubMenu>
 			</Menu>
 		)

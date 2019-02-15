@@ -8,7 +8,10 @@ import {
 
 export default function(
 	state = {
-		meta: { fetching: false, fetched: false, error: null }
+		fetching: false,
+		fetched: false,
+		error: null,
+		nodes: new Object()
 	}, // Should be sparse array with key=nodeId
 	action
 ) {
@@ -17,7 +20,9 @@ export default function(
 	case FETCH_NODES: {
 		newState = {
 			...newState,
-			meta: { fetching: true, fetched: false, error: null }
+			fetching: true,
+			fetched: false,
+			error: null
 		}
 		break
 	}
@@ -25,8 +30,12 @@ export default function(
 		const newNodes = action.payload
 		newState = {
 			...newState,
-			...newNodes,
-			meta: { fetching: false, fetched: true }
+			nodes: {
+				...newState.nodes,
+				...newNodes
+			},
+			fetching: false,
+			fetched: true
 		}
 		break
 	}
@@ -34,7 +43,9 @@ export default function(
 		const { error } = action.payload
 		newState = {
 			...newState,
-			meta: { fetching: false, fetched: false, error: error }
+			fetching: false,
+			fetched: false,
+			error: error
 		}
 		break
 	}
