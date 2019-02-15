@@ -30,7 +30,7 @@ class Aside extends Component {
 		} = this.props
 		return (
 			<Menu
-				style={{ width: 256, height: '100%' }}
+				style={{ height: '100%' }}
 				theme="dark"
 				mode="inline"
 				selectedKeys={[`${pageVisiting}${viewVisiting}`]}

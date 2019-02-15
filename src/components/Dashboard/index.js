@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
 
-import { Card, Row, Col, Tabs, Table } from 'antd'
-const TabPane = Tabs.TabPane
+import { Layout } from 'antd'
+const { Header, Footer, Sider, Content } = Layout
 
 import Aside from './Aside'
 import Overview from './Overview'
@@ -31,18 +31,22 @@ class Dashboard extends Component {
 	render() {
 		const { pageVisiting, nodes, fetching, fetched, error } = this.props
 		return (
-			<div>
-				<Aside
-					nodes={nodes}
-					fetching={fetching}
-					fetched={fetched}
-					error={error}
-				/>
-				<Switch>
-					<Route exact path={pageVisiting} component={Overview} />
-					<Route path={`${pageVisiting}/nodeview`} component={NodeView} />
-				</Switch>
-			</div>
+			<Layout style={{ height: '100%' }}>
+				<Sider style={{ height: '100%' }}>
+					<Aside
+						nodes={nodes}
+						fetching={fetching}
+						fetched={fetched}
+						error={error}
+					/>
+				</Sider>
+				<Content style={{ height: '100%' }}>
+					<Switch>
+						<Route exact path={pageVisiting} component={Overview} />
+						<Route path={`${pageVisiting}/nodeview`} component={NodeView} />
+					</Switch>
+				</Content>
+			</Layout>
 		)
 	}
 }
