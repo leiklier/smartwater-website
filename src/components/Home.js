@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import {
 	pushMeasurement,
-	fetchMeasurementsInterval,
+	fetchMeasurementsGraphView,
 	fetchMeasurementsLast,
 	fetchMeasurementsAggregate
 } from '../actions/measurementsActions'
@@ -21,14 +21,16 @@ import { fetchNodes } from '../actions/nodesActions'
 class Home extends Component {
 	componentWillMount() {
 		this.props.dispatch(fetchNodes())
-		// this.props.dispatch(pushMeasurement(1))
-		// this.props.dispatch(
-		// 	fetchMeasurementsInterval({
-		// 		nodeId: 1,
-		// 		types: ['BATTERY', 'CONDUCTIVITY'],
-		// 		fromTimestamp: 1500072925529
-		// 	})
-		// )
+		for (const nodeId in this.props.nodes) {
+			this.props.dispatch(pushMeasurement(1))
+		}
+		this.props.dispatch(
+			fetchMeasurementsGraphView({
+				nodeId: 1,
+				types: ['BATTERY', 'CONDUCTIVITY'],
+				fromTimestamp: 1500072925529
+			})
+		)
 		// this.props.dispatch(
 		// 	fetchMeasurementsLast({
 		// 		nodeId: 1,

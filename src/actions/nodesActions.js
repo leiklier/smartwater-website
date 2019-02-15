@@ -24,9 +24,6 @@ export function fetchNodes(args = {}) {
 					type: FETCH_NODES_FULFILLED,
 					payload: nodes
 				})
-				for (const nodeId in nodes) {
-					dispatch(pushMeasurement(nodeId))
-				}
 			})
 			.catch(err => {
 				dispatch({

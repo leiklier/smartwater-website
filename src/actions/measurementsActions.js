@@ -8,9 +8,9 @@ import {
 } from '../config/constants'
 import {
 	PUSH_MEASUREMENT,
-	FETCH_MEASUREMENTS_INTERVAL,
-	FETCH_MEASUREMENTS_INTERVAL_FULFILLED,
-	FETCH_MEASUREMENTS_INTERVAL_REJECTED,
+	FETCH_MEASUREMENTS_GRAPHVIEW,
+	FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED,
+	FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED,
 	FETCH_MEASUREMENTS_LAST,
 	FETCH_MEASUREMENTS_LAST_FULFILLED,
 	FETCH_MEASUREMENTS_LAST_REJECTED,
@@ -28,7 +28,7 @@ export function pushMeasurement(nodeId, initialState = false) {
 	}
 }
 
-export function fetchMeasurementsInterval(args) {
+export function fetchMeasurementsGraphView(args) {
 	var { nodeId, types, fromTimestamp, toTimestamp } = args
 	if (!types) {
 		types = MEASUREMENT_TYPES
@@ -36,7 +36,7 @@ export function fetchMeasurementsInterval(args) {
 
 	return function(dispatch) {
 		dispatch({
-			type: FETCH_MEASUREMENTS_INTERVAL,
+			type: FETCH_MEASUREMENTS_GRAPHVIEW,
 			payload: { nodeId: nodeId, types: types }
 		})
 		var queryUrl =
@@ -58,7 +58,7 @@ export function fetchMeasurementsInterval(args) {
 			.get(queryUrl)
 			.then(response => {
 				dispatch({
-					type: FETCH_MEASUREMENTS_INTERVAL_FULFILLED,
+					type: FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED,
 					payload: {
 						nodeId: response.data.nodeId,
 						data: response.data.data,
@@ -69,7 +69,7 @@ export function fetchMeasurementsInterval(args) {
 			})
 			.catch(err => {
 				dispatch({
-					type: FETCH_MEASUREMENTS_INTERVAL_REJECTED,
+					type: FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED,
 					payload: { nodeId: nodeId, error: err, types: types }
 				})
 			})

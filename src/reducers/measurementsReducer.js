@@ -2,9 +2,9 @@ import { cloneDeep } from 'lodash'
 
 import {
 	PUSH_MEASUREMENT,
-	FETCH_MEASUREMENTS_INTERVAL,
-	FETCH_MEASUREMENTS_INTERVAL_FULFILLED,
-	FETCH_MEASUREMENTS_INTERVAL_REJECTED,
+	FETCH_MEASUREMENTS_GRAPHVIEW,
+	FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED,
+	FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED,
 	FETCH_MEASUREMENTS_LAST,
 	FETCH_MEASUREMENTS_LAST_FULFILLED,
 	FETCH_MEASUREMENTS_LAST_REJECTED,
@@ -88,7 +88,7 @@ export default function reducer(
 		}
 		return newState
 	}
-	case FETCH_MEASUREMENTS_INTERVAL: {
+	case FETCH_MEASUREMENTS_GRAPHVIEW: {
 		const { nodeId, types } = action.payload
 		for (const type of types) {
 			newState[nodeId][type].graphView.fetching = true
@@ -97,7 +97,7 @@ export default function reducer(
 		}
 		return newState
 	}
-	case FETCH_MEASUREMENTS_INTERVAL_FULFILLED: {
+	case FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED: {
 		const { nodeId, data, fromTimestamp, toTimestamp } = action.payload
 		for (const type in data) {
 			newState[nodeId][type].graphView = {
@@ -110,7 +110,7 @@ export default function reducer(
 		}
 		return newState
 	}
-	case FETCH_MEASUREMENTS_INTERVAL_REJECTED: {
+	case FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED: {
 		const { nodeId, error, types } = action.payload
 		for (const type of types) {
 			newState[nodeId][type].graphView.fetching = false
