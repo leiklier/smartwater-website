@@ -18,8 +18,10 @@ import { MEASUREMENT_INTERVALS } from '../config/constants'
 import { MEASUREMENT_TYPES, VALID_AGGREGATES } from '../config/constants'
 
 const measurementElementSkeleton = {
-	websocket: false, // Should contain websocket object when connected
-	typesSubscribedTo: new Array(),
+	meta: {
+		websocket: false, // Should contain websocket object when connected
+		typesSubscribedTo: new Array()
+	},
 	...(() => {
 		var measurements = new Object()
 		for (const type of MEASUREMENT_TYPES) {
@@ -122,8 +124,12 @@ export default function reducer(
 	case FETCH_MEASUREMENTS_LAST: {
 		const { nodeId, types } = action.payload
 		for (const type of types) {
-			newState[nodeId][type].lastMeasurement.fetching = true
-			newState[nodeId][type].lastMeasurement.fetched = false
+			newState[nodeId][type].lastMeasurement = {
+				...newState[nodeId][type].lastMeasurement,
+				fetching: true,
+				fetched: false,
+				error: null
+			}
 		}
 		return newState
 	}

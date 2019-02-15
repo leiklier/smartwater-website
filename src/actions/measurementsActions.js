@@ -76,8 +76,7 @@ export function fetchMeasurementsGraphView(args) {
 	}
 }
 
-export function fetchMeasurementsLast(args) {
-	var { nodeId, types } = args
+export function fetchMeasurementsLast(nodeId, types = false) {
 	if (!types) {
 		types = MEASUREMENT_TYPES
 	}
