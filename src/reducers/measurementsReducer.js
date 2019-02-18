@@ -49,7 +49,7 @@ export function newMeasurementElement(types = false) {
 
 				measurements[type].graphView = {
 					data: new Array(),
-					fromTimestamp: false,
+					fromTimestamp: Date.now() - 60 * 60 * 24,
 					toTimestamp: false,
 					fetching: false,
 					fetched: false,
@@ -88,19 +88,25 @@ export default function reducer(
 	case FETCH_MEASUREMENTS_GRAPHVIEW: {
 		const { nodeId, types } = action.payload
 		for (const type of types) {
-			newState[nodeId][type].graphView.fetching = true
-			newState[nodeId][type].graphView.fetched = false
-			newState[nodeId][type].graphView.error = null
+			newState[nodeId][type].graphView = {
+				...newState[nodeId][type].graphView,
+				fetching: true,
+				fetched: false,
+				error: null
+			}
 		}
 		break
 	}
 	case FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED: {
 		const { nodeId, data, fromTimestamp, toTimestamp } = action.payload
 		for (const type in data) {
+			if (!Object.keys(newState[nodeId]).includes(type)) break
+
 			newState[nodeId][type].graphView = {
+				...newState[nodeId][type].graphView,
 				data: data[type],
-				fromTimestamp: fromTimestamp,
-				toTimestamp: toTimestamp,
+				fromTimestamp,
+				toTimestamp,
 				fetching: false,
 				fetched: true
 			}
@@ -110,11 +116,15 @@ export default function reducer(
 	case FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED: {
 		const { nodeId, error, types } = action.payload
 		for (const type of types) {
-			newState[nodeId][type].graphView.fetching = false
-			newState[nodeId][type].graphView.fetched = false
-			newState[nodeId][type].graphView.error = error
+			if (!Object.keys(newState[nodeId]).includes(type)) break
+			newState[nodeId][type].graphView = {
+				...newState[nodeId][type].graphView,
+				fetching: false,
+				fetched: false,
+				error: error
+			}
 		}
-		return newState
+		break
 	}
 	case FETCH_MEASUREMENTS_LAST: {
 		const { nodeId, types } = action.payload

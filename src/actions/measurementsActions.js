@@ -29,15 +29,12 @@ export function pushMeasurement(nodeId, types = false) {
 }
 
 export function fetchMeasurementsGraphView(args) {
-	var { nodeId, types, fromTimestamp, toTimestamp } = args
-	if (!types) {
-		types = MEASUREMENT_TYPES
-	}
-
-	return dispatch => {
+	return (dispatch, getState) => {
+		var { nodeId, types, fromTimestamp, toTimestamp } = args
+		types = types || Object.keys(getState().measurements[nodeId])
 		dispatch({
 			type: FETCH_MEASUREMENTS_GRAPHVIEW,
-			payload: { nodeId: nodeId, types: types }
+			payload: { nodeId, types }
 		})
 		var queryUrl =
 			apiConfig.host +
@@ -46,13 +43,8 @@ export function fetchMeasurementsGraphView(args) {
 			`${nodeId}/` +
 			`${fromTimestamp}/`
 
-		if (toTimestamp) {
-			queryUrl += `${toTimestamp}/`
-		}
-
-		if (types) {
-			queryUrl += `?types=${types.join(',')}`
-		}
+		queryUrl += toTimestamp ? `${toTimestamp}/` : ''
+		queryUrl += `?types=${types.join(',')}`
 
 		return axios
 			.get(queryUrl)
@@ -60,17 +52,17 @@ export function fetchMeasurementsGraphView(args) {
 				dispatch({
 					type: FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED,
 					payload: {
-						nodeId: response.data.nodeId,
+						nodeId,
 						data: response.data.data,
-						fromTimestamp: fromTimestamp,
-						toTimestamp: toTimestamp
+						fromTimestamp,
+						toTimestamp
 					}
 				})
 			})
-			.catch(err => {
+			.catch(error => {
 				dispatch({
 					type: FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED,
-					payload: { nodeId: nodeId, error: err, types: types }
+					payload: { nodeId, error, types }
 				})
 			})
 	}
