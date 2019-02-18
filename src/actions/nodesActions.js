@@ -14,9 +14,9 @@ export function fetchNodes(args = {}) {
 
 	const queryUrl = apiConfig.host + apiConfig.basePath + apiConfig.nodesPath
 
-	return function(dispatch) {
+	return dispatch => {
 		dispatch({ type: FETCH_NODES })
-		axios
+		return axios
 			.get(queryUrl)
 			.then(response => {
 				const nodes = response.data

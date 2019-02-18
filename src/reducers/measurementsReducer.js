@@ -88,7 +88,7 @@ export default function reducer(
 		} else {
 			newState[nodeId] = measurementElementSkeleton
 		}
-		return newState
+		break
 	}
 	case FETCH_MEASUREMENTS_GRAPHVIEW: {
 		const { nodeId, types } = action.payload
@@ -97,7 +97,7 @@ export default function reducer(
 			newState[nodeId][type].graphView.fetched = false
 			newState[nodeId][type].graphView.error = null
 		}
-		return newState
+		break
 	}
 	case FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED: {
 		const { nodeId, data, fromTimestamp, toTimestamp } = action.payload
@@ -110,7 +110,7 @@ export default function reducer(
 				fetched: true
 			}
 		}
-		return newState
+		break
 	}
 	case FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED: {
 		const { nodeId, error, types } = action.payload
@@ -131,7 +131,7 @@ export default function reducer(
 				error: null
 			}
 		}
-		return newState
+		break
 	}
 	case FETCH_MEASUREMENTS_LAST_FULFILLED: {
 		const { nodeId, data } = action.payload
@@ -143,7 +143,7 @@ export default function reducer(
 			newState[nodeId][type].lastMeasurement.fetched = true
 			newState[nodeId][type].lastMeasurement.fetching = false
 		}
-		return newState
+		break
 	}
 	case FETCH_MEASUREMENTS_LAST_REJECTED: {
 		const { nodeId, error, types } = action.payload
@@ -152,7 +152,7 @@ export default function reducer(
 			newState[nodeId][type].lastMeasurement.fetching = false
 			newState[nodeId][type].lastMeasurement.error = error
 		}
-		return newState
+		break
 	}
 	case FETCH_MEASUREMENTS_AGGREGATE: {
 		const { nodeId, types, intervalName, aggregate } = action.payload
@@ -165,7 +165,7 @@ export default function reducer(
 			].fetched = false
 			newState[nodeId][type].aggregates[intervalName][aggregate].error = null
 		}
-		return newState
+		break
 	}
 	case FETCH_MEASUREMENTS_AGGREGATE_FULFILLED: {
 		const {
@@ -192,7 +192,7 @@ export default function reducer(
 				aggregate
 			].lastUpdated = fetchedTimestamp
 		}
-		return newState
+		break
 	}
 	case FETCH_MEASUREMENTS_AGGREGATE_REJECTED: {
 		const { nodeId, error, intervalName, aggregate, types } = action.payload
@@ -205,7 +205,7 @@ export default function reducer(
 			].fetched = false
 			newState[nodeId][type].aggregates[intervalName][aggregate].error = error
 		}
-		return newState
+		break
 	}
 	}
 	return newState

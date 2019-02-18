@@ -20,8 +20,8 @@ import {
 } from './measurementsActionTypes'
 
 export function pushMeasurement(nodeId, initialState = false) {
-	return function(dispatch) {
-		dispatch({
+	return dispatch => {
+		return dispatch({
 			type: PUSH_MEASUREMENT,
 			payload: { nodeId: nodeId, initialState: initialState }
 		})
@@ -34,7 +34,7 @@ export function fetchMeasurementsGraphView(args) {
 		types = MEASUREMENT_TYPES
 	}
 
-	return function(dispatch) {
+	return dispatch => {
 		dispatch({
 			type: FETCH_MEASUREMENTS_GRAPHVIEW,
 			payload: { nodeId: nodeId, types: types }
@@ -54,7 +54,7 @@ export function fetchMeasurementsGraphView(args) {
 			queryUrl += `?types=${types.join(',')}`
 		}
 
-		axios
+		return axios
 			.get(queryUrl)
 			.then(response => {
 				dispatch({
@@ -77,10 +77,10 @@ export function fetchMeasurementsGraphView(args) {
 }
 
 export function fetchMeasurementsLast(nodeId, types = false) {
-	if (!types) {
-		types = MEASUREMENT_TYPES
-	}
-	return function(dispatch) {
+	return dispatch => {
+		if (!types) {
+			types = MEASUREMENT_TYPES
+		}
 		dispatch({
 			type: FETCH_MEASUREMENTS_LAST,
 			payload: { nodeId: nodeId, types: types }
@@ -94,7 +94,7 @@ export function fetchMeasurementsLast(nodeId, types = false) {
 		if (types) {
 			queryUrl += `?types=${types.join(',')}`
 		}
-		axios
+		return axios
 			.get(queryUrl)
 			.then(response => {
 				dispatch({
@@ -115,11 +115,9 @@ export function fetchMeasurementsAggregate(args) {
 	var { nodeId, intervalName, types, aggregate } = args
 	const fromTimestamp =
 		Date.now() - MEASUREMENT_INTERVALS[intervalName].duration
-	if (!types) {
-		types = MEASUREMENT_TYPES
-	}
+	if (!types) types = MEASUREMENT_TYPES
 
-	return function(dispatch) {
+	return dispatch => {
 		dispatch({
 			type: FETCH_MEASUREMENTS_AGGREGATE,
 			payload: {
@@ -138,7 +136,7 @@ export function fetchMeasurementsAggregate(args) {
 			`?aggregate=${aggregate}` +
 			`&types=${types.join(',')}`
 
-		axios
+		return axios
 			.get(queryUrl)
 			.then(response => {
 				dispatch({
@@ -169,15 +167,18 @@ export function fetchMeasurementsAggregate(args) {
 }
 
 export function subscribeMeasurements(types, append = true) {
-	return function(dispatch) {
-		dispatch({
+	return dispatch => {
+		return dispatch({
 			type: 'SUBSCRIBE_MEASUREMENTS',
 			payload: { types: types, append: append }
 		})
 	}
 }
 export function unsubscribeMeasurements(types = false) {
-	return function(dispatch) {
-		dispatch({ type: 'UNSUBSCRIBE_MEASUREMENTS', payload: { types: types } })
+	return dispatch => {
+		return dispatch({
+			type: 'UNSUBSCRIBE_MEASUREMENTS',
+			payload: { types: types }
+		})
 	}
 }
