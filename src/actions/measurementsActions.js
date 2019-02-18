@@ -118,22 +118,34 @@ export function fetchMeasurementsLast(nodeId, types = false) {
 	}
 }
 
-export function fetchMeasurementsAggregate(args) {
-	var { nodeId, intervalName, types, aggregate } = args
-	const fromTimestamp =
-		Date.now() - MEASUREMENT_INTERVALS[intervalName].duration
-	if (!types) types = MEASUREMENT_TYPES
+export function fetchMeasurementsAggregate(
+	nodeId,
+	aggregate,
+	intervalName,
+	types = false
+) {
+	return (dispatch, getState) => {
+		if (!getState().measurements[nodeId]) return
+		if (!Object.keys(MEASUREMENT_INTERVALS).includes(intervalName)) return
+		types = types || Object.keys(getState().measurements[nodeId])
+		for (const type of types[nodeId]) {
+			if (!Object.keys(getState().measurements[nodeId]).includes(type))
+				delete types[nodeId][type]
+		}
 
-	return dispatch => {
 		dispatch({
 			type: FETCH_MEASUREMENTS_AGGREGATE,
 			payload: {
-				nodeId: nodeId,
-				types: types,
-				intervalName: intervalName,
-				aggregate: aggregate
+				nodeId,
+				types,
+				intervalName,
+				aggregate
 			}
 		})
+
+		const fromTimestamp =
+			Date.now() - MEASUREMENT_INTERVALS[intervalName].duration
+
 		var queryUrl =
 			apiConfig.host +
 			apiConfig.basePath +
@@ -149,24 +161,24 @@ export function fetchMeasurementsAggregate(args) {
 				dispatch({
 					type: FETCH_MEASUREMENTS_AGGREGATE_FULFILLED,
 					payload: {
-						nodeId: nodeId,
+						nodeId,
+						types,
 						data: response.data.data,
-						intervalName: intervalName,
-						aggregate: aggregate,
-						types: types,
+						intervalName,
+						aggregate,
 						fetchedTimestamp: Date.now()
 					}
 				})
 			})
-			.catch(err => {
+			.catch(error => {
 				dispatch({
 					type: FETCH_MEASUREMENTS_AGGREGATE_REJECTED,
 					payload: {
-						nodeId: nodeId,
-						error: err,
-						intervalName: intervalName,
-						aggregate: aggregate,
-						types: types
+						nodeId,
+						error,
+						intervalName,
+						aggregate,
+						types
 					}
 				})
 			})

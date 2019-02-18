@@ -187,53 +187,81 @@ export default function reducer(
 	case FETCH_MEASUREMENTS_AGGREGATE: {
 		const { nodeId, types, intervalName, aggregate } = action.payload
 		for (const type of types) {
-			newState[nodeId][type].aggregates[intervalName][
-				aggregate
-			].fetching = true
-			newState[nodeId][type].aggregates[intervalName][
-				aggregate
-			].fetched = false
-			newState[nodeId][type].aggregates[intervalName][aggregate].error = null
+			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (
+				!Object.keys(newState[nodeId][type].aggregates).includes(intervalName)
+			)
+				continue
+			if (
+				!Object.keys(
+					newState[nodeId][type].aggregates[intervalName]
+				).includes(aggregate)
+			)
+				continue
+
+			newState[nodeId][type].aggregates[intervalName][aggregate] = {
+				...newState[nodeId][type].aggregates[intervalName][aggregate],
+				fetching: true,
+				fetched: false,
+				error: null
+			}
 		}
 		break
 	}
 	case FETCH_MEASUREMENTS_AGGREGATE_FULFILLED: {
 		const {
 			nodeId,
+			types,
 			data,
 			intervalName,
 			aggregate,
-			types,
 			fetchedTimestamp
 		} = action.payload
 		for (const type of types) {
-			newState[nodeId][type].aggregates[intervalName][
-				aggregate
-			].fetching = false
+			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (
+				!Object.keys(newState[nodeId][type].aggregates).includes(intervalName)
+			)
+				continue
+			if (
+				!Object.keys(
+					newState[nodeId][type].aggregates[intervalName]
+				).includes(aggregate)
+			)
+				continue
 
-			newState[nodeId][type].aggregates[intervalName][
-				aggregate
-			].fetched = true
-
-			newState[nodeId][type].aggregates[intervalName][aggregate].value =
-					typeof data[type] !== 'undefined' ? data[type][0].value : false
-
-			newState[nodeId][type].aggregates[intervalName][
-				aggregate
-			].lastUpdated = fetchedTimestamp
+			newState[nodeId][type].aggregates[intervalName][aggregate] = {
+				...newState[nodeId][type].aggregates[intervalName][aggregate],
+				fetching: false,
+				fetched: true,
+				error: null,
+				value: data[type] && data[type][0] ? data[type][0].value : false,
+				lastUpdated: fetchedTimestamp
+			}
 		}
 		break
 	}
 	case FETCH_MEASUREMENTS_AGGREGATE_REJECTED: {
 		const { nodeId, error, intervalName, aggregate, types } = action.payload
 		for (const type of types) {
-			newState[nodeId][type].aggregates[intervalName][
-				aggregate
-			].fetching = false
-			newState[nodeId][type].aggregates[intervalName][
-				aggregate
-			].fetched = false
-			newState[nodeId][type].aggregates[intervalName][aggregate].error = error
+			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (
+				!Object.keys(newState[nodeId][type].aggregates).includes(intervalName)
+			)
+				continue
+			if (
+				!Object.keys(
+					newState[nodeId][type].aggregates[intervalName]
+				).includes(aggregate)
+			)
+				continue
+
+			newState[nodeId][type].aggregates[intervalName][aggregate] = {
+				...newState[nodeId][type].aggregates[intervalName][aggregate],
+				fetching: false,
+				fetched: false,
+				error: error
+			}
 		}
 		break
 	}
