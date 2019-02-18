@@ -19,11 +19,11 @@ import {
 	FETCH_MEASUREMENTS_AGGREGATE_REJECTED
 } from './measurementsActionTypes'
 
-export function pushMeasurement(nodeId, initialState = false) {
+export function pushMeasurement(nodeId, types = false) {
 	return dispatch => {
 		return dispatch({
 			type: PUSH_MEASUREMENT,
-			payload: { nodeId: nodeId, initialState: initialState }
+			payload: { nodeId: nodeId, types: types }
 		})
 	}
 }

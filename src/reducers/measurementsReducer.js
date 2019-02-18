@@ -17,61 +17,60 @@ import { MEASUREMENT_INTERVALS } from '../config/constants'
 
 import { MEASUREMENT_TYPES, VALID_AGGREGATES } from '../config/constants'
 
-const measurementElementSkeleton = {
-	meta: {
-		websocket: false, // Should contain websocket object when connected
-		typesSubscribedTo: new Array()
-	},
-	...(() => {
-		var measurements = new Object()
-		for (const type of MEASUREMENT_TYPES) {
-			measurements[type] = new Object()
+export function newMeasurementElement(types = false) {
+	return {
+		...(() => {
+			types = types || MEASUREMENT_TYPES
+			var measurements = new Object()
+			for (const type of types) {
+				measurements[type] = new Object()
 
-			// Aggregates
-			measurements[type].aggregates = (() => {
-				var aggregates = new Object()
+				// Aggregates
+				measurements[type].aggregates = (() => {
+					var aggregates = new Object()
 
-				for (const interval in MEASUREMENT_INTERVALS) {
-					aggregates[interval] = {
-						duration: MEASUREMENT_INTERVALS[interval].duration,
-						textDisplay: MEASUREMENT_INTERVALS[interval].textDisplay
-					}
-					for (const valid_aggregate of VALID_AGGREGATES) {
-						aggregates[interval][valid_aggregate] = {
-							value: false, // number
-							lastUpdated: null, // timestamp
-							fetching: false, // boolean
-							fetched: false, // boolean
-							error: null // error object
+					for (const interval in MEASUREMENT_INTERVALS) {
+						aggregates[interval] = {
+							duration: MEASUREMENT_INTERVALS[interval].duration,
+							textDisplay: MEASUREMENT_INTERVALS[interval].textDisplay
+						}
+						for (const valid_aggregate of VALID_AGGREGATES) {
+							aggregates[interval][valid_aggregate] = {
+								value: false, // number
+								lastUpdated: null, // timestamp
+								fetching: false, // boolean
+								fetched: false, // boolean
+								error: null // error object
+							}
 						}
 					}
+					return aggregates
+				})()
+
+				measurements[type].graphView = {
+					data: new Array(),
+					fromTimestamp: false,
+					toTimestamp: false,
+					fetching: false,
+					fetched: false,
+					error: null
 				}
-				return aggregates
-			})()
 
-			measurements[type].graphView = {
-				data: new Array(),
-				fromTimestamp: false,
-				toTimestamp: false,
-				fetching: false,
-				fetched: false,
-				error: null
+				measurements[type].lastMeasurement = {
+					value: false,
+					timeCreated: false,
+					position: {
+						lng: false,
+						lat: false
+					},
+					fetching: false,
+					fetched: false,
+					error: null
+				}
 			}
-
-			measurements[type].lastMeasurement = {
-				value: false,
-				timeCreated: false,
-				position: {
-					lng: false,
-					lat: false
-				},
-				fetching: false,
-				fetched: false,
-				error: null
-			}
-		}
-		return measurements
-	})()
+			return measurements
+		})()
+	}
 }
 
 export default function reducer(
@@ -82,12 +81,8 @@ export default function reducer(
 
 	switch (action.type) {
 	case PUSH_MEASUREMENT: {
-		const { nodeId, initialState } = action.payload
-		if (initialState) {
-			newState[nodeId] = initialState
-		} else {
-			newState[nodeId] = measurementElementSkeleton
-		}
+		const { nodeId, types } = action.payload
+		newState[nodeId] = newMeasurementElement(types)
 		break
 	}
 	case FETCH_MEASUREMENTS_GRAPHVIEW: {
