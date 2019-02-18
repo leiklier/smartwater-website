@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { pushMeasurement } from './measurementsActions'
+import { refreshMeasurements } from './measurementsActions'
 
 import { apiConfig } from '../config/constants'
 import {
@@ -24,6 +24,9 @@ export function fetchNodes(args = {}) {
 					type: FETCH_NODES_FULFILLED,
 					payload: nodes
 				})
+			})
+			.then(() => {
+				dispatch(refreshMeasurements())
 			})
 			.catch(err => {
 				dispatch({

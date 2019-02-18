@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash'
 
 import {
-	PUSH_MEASUREMENT,
+	REFRESH_MEASUREMENTS,
 	FETCH_MEASUREMENTS_GRAPHVIEW,
 	FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED,
 	FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED,
@@ -65,6 +65,7 @@ export function newMeasurementElement(types = false) {
 					},
 					fetching: false,
 					fetched: false,
+					lastFetched: false,
 					error: null
 				}
 			}
@@ -80,14 +81,26 @@ export default function reducer(
 	var newState = cloneDeep(state)
 
 	switch (action.type) {
-	case PUSH_MEASUREMENT: {
-		const { nodeId, types } = action.payload
-		newState[nodeId] = newMeasurementElement(types)
+	case REFRESH_MEASUREMENTS: {
+		const { types } = action.payload
+		for (const nodeId in types) {
+			if (!newState[nodeId]) {
+				newState[nodeId] = newMeasurementElement(types[nodeId])
+				continue
+			}
+			for (const type of types[nodeId]) {
+				if (!newState[nodeId][types]) {
+					// TODO: Add new type here
+				}
+			}
+		}
 		break
 	}
 	case FETCH_MEASUREMENTS_GRAPHVIEW: {
 		const { nodeId, types } = action.payload
 		for (const type of types) {
+			if (!Object.keys(newState[nodeId]).includes(type)) continue
+
 			newState[nodeId][type].graphView = {
 				...newState[nodeId][type].graphView,
 				fetching: true,
@@ -98,9 +111,10 @@ export default function reducer(
 		break
 	}
 	case FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED: {
-		const { nodeId, data, fromTimestamp, toTimestamp } = action.payload
-		for (const type in data) {
-			if (!Object.keys(newState[nodeId]).includes(type)) break
+		const { nodeId, types, data, fromTimestamp, toTimestamp } = action.payload
+		for (const type of types) {
+			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (!Object.keys(data).includes(type)) data[type] = new Array()
 
 			newState[nodeId][type].graphView = {
 				...newState[nodeId][type].graphView,
@@ -116,7 +130,8 @@ export default function reducer(
 	case FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED: {
 		const { nodeId, error, types } = action.payload
 		for (const type of types) {
-			if (!Object.keys(newState[nodeId]).includes(type)) break
+			if (!Object.keys(newState[nodeId]).includes(type)) continue
+
 			newState[nodeId][type].graphView = {
 				...newState[nodeId][type].graphView,
 				fetching: false,
@@ -129,6 +144,7 @@ export default function reducer(
 	case FETCH_MEASUREMENTS_LAST: {
 		const { nodeId, types } = action.payload
 		for (const type of types) {
+			if (!Object.keys(newState[nodeId]).includes(type)) continue
 			newState[nodeId][type].lastMeasurement = {
 				...newState[nodeId][type].lastMeasurement,
 				fetching: true,
@@ -139,23 +155,32 @@ export default function reducer(
 		break
 	}
 	case FETCH_MEASUREMENTS_LAST_FULFILLED: {
-		const { nodeId, data } = action.payload
-		for (const type in data) {
+		const { nodeId, types, data } = action.payload
+		for (const type of types) {
+			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (!Object.keys(data).includes(type)) data[type] = [{ value: false }]
+
 			newState[nodeId][type].lastMeasurement = {
 				...newState[nodeId][type].lastMeasurement,
-				...data[type][0]
+				...data[type][0],
+				fetching: false,
+				fetched: true,
+				lastFetched: Date.now()
 			}
-			newState[nodeId][type].lastMeasurement.fetched = true
-			newState[nodeId][type].lastMeasurement.fetching = false
 		}
 		break
 	}
 	case FETCH_MEASUREMENTS_LAST_REJECTED: {
-		const { nodeId, error, types } = action.payload
+		const { nodeId, types, error } = action.payload
 		for (const type of types) {
-			newState[nodeId][type].lastMeasurement.fetched = false
-			newState[nodeId][type].lastMeasurement.fetching = false
-			newState[nodeId][type].lastMeasurement.error = error
+			if (!Object.keys(newState[nodeId]).includes(type)) continue
+
+			newState[nodeId][type].lastMeasurement = {
+				...newState[nodeId][type].lastMeasurement,
+				fetching: false,
+				fetched: false,
+				error
+			}
 		}
 		break
 	}

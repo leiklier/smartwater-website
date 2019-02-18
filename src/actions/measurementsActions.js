@@ -7,7 +7,7 @@ import {
 	MEASUREMENT_INTERVALS
 } from '../config/constants'
 import {
-	PUSH_MEASUREMENT,
+	REFRESH_MEASUREMENTS,
 	FETCH_MEASUREMENTS_GRAPHVIEW,
 	FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED,
 	FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED,
@@ -19,11 +19,23 @@ import {
 	FETCH_MEASUREMENTS_AGGREGATE_REJECTED
 } from './measurementsActionTypes'
 
-export function pushMeasurement(nodeId, types = false) {
-	return dispatch => {
+export function refreshMeasurements() {
+	return (dispatch, getState) => {
+		var types = new Object()
+		if (getState().nodes.fetched) {
+			for (const nodeId in getState().nodes.nodes) {
+				if (!getState().nodes.nodes[nodeId].settings.measurements) continue
+
+				types[nodeId] = new Array()
+				for (const type in getState().nodes.nodes[nodeId].settings
+					.measurements) {
+					types[nodeId].push(type)
+				}
+			}
+		}
 		return dispatch({
-			type: PUSH_MEASUREMENT,
-			payload: { nodeId: nodeId, types: types }
+			type: REFRESH_MEASUREMENTS,
+			payload: { types }
 		})
 	}
 }
@@ -53,6 +65,7 @@ export function fetchMeasurementsGraphView(args) {
 					type: FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED,
 					payload: {
 						nodeId,
+						types,
 						data: response.data.data,
 						fromTimestamp,
 						toTimestamp
@@ -69,35 +82,31 @@ export function fetchMeasurementsGraphView(args) {
 }
 
 export function fetchMeasurementsLast(nodeId, types = false) {
-	return dispatch => {
-		if (!types) {
-			types = MEASUREMENT_TYPES
-		}
+	return (dispatch, getState) => {
+		types = types || Object.keys(getState().measurements[nodeId])
 		dispatch({
 			type: FETCH_MEASUREMENTS_LAST,
-			payload: { nodeId: nodeId, types: types }
+			payload: { nodeId, types }
 		})
 		var queryUrl =
 			apiConfig.host +
 			apiConfig.basePath +
 			apiConfig.measurementsPath +
-			`${nodeId}/`
+			`${nodeId}/` +
+			`?types=${types.join(',')}`
 
-		if (types) {
-			queryUrl += `?types=${types.join(',')}`
-		}
 		return axios
 			.get(queryUrl)
 			.then(response => {
 				dispatch({
 					type: FETCH_MEASUREMENTS_LAST_FULFILLED,
-					payload: { nodeId: nodeId, data: response.data.data }
+					payload: { nodeId, types, data: response.data.data }
 				})
 			})
-			.catch(err => {
+			.catch(error => {
 				dispatch({
 					type: FETCH_MEASUREMENTS_LAST_REJECTED,
-					payload: { nodeId: nodeId, error: err, types: types }
+					payload: { nodeId, types, error }
 				})
 			})
 	}
@@ -155,22 +164,5 @@ export function fetchMeasurementsAggregate(args) {
 					}
 				})
 			})
-	}
-}
-
-export function subscribeMeasurements(types, append = true) {
-	return dispatch => {
-		return dispatch({
-			type: 'SUBSCRIBE_MEASUREMENTS',
-			payload: { types: types, append: append }
-		})
-	}
-}
-export function unsubscribeMeasurements(types = false) {
-	return dispatch => {
-		return dispatch({
-			type: 'UNSUBSCRIBE_MEASUREMENTS',
-			payload: { types: types }
-		})
 	}
 }

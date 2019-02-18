@@ -1,21 +1,21 @@
 import { fetchNodes } from './nodesActions.js'
 import {
-	pushMeasurement,
-	fetchMeasurementsGraphView
+	refreshMeasurements,
+	fetchMeasurementsGraphView,
+	fetchMeasurementsLast
 } from './measurementsActions.js'
 
 export function initializeStore() {
 	return (dispatch, getState) => {
-		return dispatch(fetchNodes()).then(() => {
-			for (const nodeId in getState().nodes.nodes) {
-				dispatch(pushMeasurement(nodeId))
-				dispatch(
-					fetchMeasurementsGraphView({
-						nodeId,
-						fromTimestamp: 1500499766327
-					})
-				)
-			}
+		dispatch(fetchNodes()).then(() => {
+			dispatch(
+				fetchMeasurementsGraphView({
+					nodeId: 1,
+					fromTimestamp: 1500511031199
+				})
+			).then(() => {
+				dispatch(fetchMeasurementsLast(1))
+			})
 		})
 	}
 }
