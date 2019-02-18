@@ -83,7 +83,13 @@ export function fetchMeasurementsGraphView(args) {
 
 export function fetchMeasurementsLast(nodeId, types = false) {
 	return (dispatch, getState) => {
+		if (!getState().measurements[nodeId]) return
 		types = types || Object.keys(getState().measurements[nodeId])
+		for (const type of types[nodeId]) {
+			if (!Object.keys(getState().measurements[nodeId]).includes(type))
+				delete types[nodeId][type]
+		}
+
 		dispatch({
 			type: FETCH_MEASUREMENTS_LAST,
 			payload: { nodeId, types }
