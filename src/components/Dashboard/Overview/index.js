@@ -3,6 +3,9 @@ import { connect } from 'react-redux'
 
 import { fetchMeasurementsLast } from '../../../actions/measurementsActions'
 
+import { Layout, Icon } from 'antd'
+const { Header, Content } = Layout
+
 import NodeCard from './NodeCard'
 
 @connect(store => {
@@ -33,17 +36,22 @@ class Overview extends Component {
 	render() {
 		const { nodes, measurements } = this.props
 		return (
-			<div>
-				{Object.keys(measurements).map(nodeId => {
-					return (
-						<NodeCard
-							key={nodeId}
-							nodeId={nodeId}
-							nodeName={nodes[nodeId].name}
-						/>
-					)
-				})}
-			</div>
+			<Layout>
+				<Header>
+					<h2 style={{ color: 'white', display: 'inline-block' }}>Overview</h2>
+				</Header>
+				<Content>
+					{Object.keys(measurements).map(nodeId => {
+						return (
+							<NodeCard
+								key={nodeId}
+								nodeId={nodeId}
+								nodeName={nodes[nodeId].name}
+							/>
+						)
+					})}
+				</Content>
+			</Layout>
 		)
 	}
 }
