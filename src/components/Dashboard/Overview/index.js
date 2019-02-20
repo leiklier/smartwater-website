@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import {
-	pushMeasurement,
-	fetchMeasurementsLast,
-	fetchMeasurementsGraphView
-} from '../../../actions/measurementsActions'
+import { fetchMeasurementsLast } from '../../../actions/measurementsActions'
 
 @connect(store => {
 	return {
@@ -20,8 +16,20 @@ class Overview extends Component {
 	constructor(props) {
 		super(props)
 	}
+	componentWillMount() {
+		const { measurements } = this.props
+		for (const nodeId in measurements) {
+			this.props.dispatch(fetchMeasurementsLast({ nodeId, initialize: true }))
+		}
+	}
+	componentWillUpdate() {
+		const { measurements } = this.props
+		for (const nodeId in measurements) {
+			this.props.dispatch(fetchMeasurementsLast({ nodeId, initialize: true }))
+		}
+	}
 	render() {
-		return <div>Overview</div>
+		return <div blabla={this.props.measurements}>Overview</div>
 	}
 }
 

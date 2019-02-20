@@ -155,7 +155,7 @@ export default function reducer(
 		break
 	}
 	case FETCH_MEASUREMENTS_LAST_FULFILLED: {
-		const { nodeId, types, data } = action.payload
+		var { nodeId, types, data } = action.payload
 		for (const type of types) {
 			if (!Object.keys(newState[nodeId]).includes(type)) continue
 			if (!Object.keys(data).includes(type)) data[type] = [{ value: false }]

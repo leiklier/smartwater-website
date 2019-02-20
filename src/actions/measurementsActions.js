@@ -81,38 +81,49 @@ export function fetchMeasurementsGraphView(args) {
 	}
 }
 
-export function fetchMeasurementsLast(nodeId, types = false) {
+export function fetchMeasurementsLast(args) {
+	var { nodeId, initialize, types } = args
 	return (dispatch, getState) => {
 		if (!getState().measurements[nodeId]) return
 		types = types || Object.keys(getState().measurements[nodeId])
-		for (const type of types[nodeId]) {
-			if (!Object.keys(getState().measurements[nodeId]).includes(type))
-				delete types[nodeId][type]
+		var typesToFetch = new Array()
+		for (const type of types) {
+			if (!Object.keys(getState().measurements[nodeId]).includes(type)) {
+				continue
+			}
+			if (initialize) {
+				const { fetching, fetched } = getState().measurements[nodeId][
+					type
+				].lastMeasurement
+				if ((fetched || fetching) && types.indexOf(type > -1)) continue
+			}
+			typesToFetch.push(type)
 		}
+		if (typesToFetch.length === 0) return
 
 		dispatch({
 			type: FETCH_MEASUREMENTS_LAST,
-			payload: { nodeId, types }
+			payload: { nodeId, types: typesToFetch }
 		})
 		var queryUrl =
 			apiConfig.host +
 			apiConfig.basePath +
 			apiConfig.measurementsPath +
 			`${nodeId}/` +
-			`?types=${types.join(',')}`
+			`?types=${typesToFetch.join(',')}`
 
 		return axios
 			.get(queryUrl)
 			.then(response => {
 				dispatch({
 					type: FETCH_MEASUREMENTS_LAST_FULFILLED,
-					payload: { nodeId, types, data: response.data.data }
+					payload: { nodeId, types: typesToFetch, data: response.data.data }
 				})
 			})
 			.catch(error => {
 				dispatch({
 					type: FETCH_MEASUREMENTS_LAST_REJECTED,
-					payload: { nodeId, types, error }
+					payload: { nodeId, types: typesToFetch, error }
 				})
 			})
 	}
