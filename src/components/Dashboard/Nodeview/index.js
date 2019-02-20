@@ -11,6 +11,8 @@ import {
 } from '../../../config/constants'
 import { fetchMeasurementsAggregate } from '../../../actions/measurementsActions'
 
+import MeasurementCard from './MeasurementCard'
+
 @connect(store => {
 	return {
 		measurements: store.measurements
@@ -32,7 +34,7 @@ class Nodeview extends Component {
 		}
 	}
 	render() {
-		const { nodeId, nodeName } = this.props
+		const { nodeId, nodeName, measurements } = this.props
 		return (
 			<Layout>
 				<Header style={{ paddingLeft: 0 }}>
@@ -47,7 +49,17 @@ class Nodeview extends Component {
 						{nodeName}
 					</h2>
 				</Header>
-				<Content>bewdfjbnsdo</Content>
+				<Content>
+					{Object.keys(measurements[nodeId]).map(type => {
+						return (
+							<MeasurementCard
+								key={nodeId + type}
+								nodeId={nodeId}
+								type={type}
+							/>
+						)
+					})}
+				</Content>
 			</Layout>
 		)
 	}
