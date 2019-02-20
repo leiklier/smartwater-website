@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 
 import { fetchMeasurementsLast } from '../../../actions/measurementsActions'
 
+import NodeCard from './NodeCard'
+
 @connect(store => {
 	return {
 		nodes: store.nodes.nodes,
@@ -29,7 +31,20 @@ class Overview extends Component {
 		}
 	}
 	render() {
-		return <div blabla={this.props.measurements}>Overview</div>
+		const { measurements } = this.props
+		return (
+			<div>
+				{Object.keys(measurements).map(nodeId => {
+					return (
+						<NodeCard
+							key={nodeId}
+							nodeId={nodeId}
+							measurements={measurements[nodeId]}
+						/>
+					)
+				})}
+			</div>
+		)
 	}
 }
 
