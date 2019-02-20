@@ -31,7 +31,7 @@ class Overview extends Component {
 		}
 	}
 	render() {
-		const { measurements } = this.props
+		const { nodes, measurements } = this.props
 		return (
 			<div>
 				{Object.keys(measurements).map(nodeId => {
@@ -39,6 +39,7 @@ class Overview extends Component {
 						<NodeCard
 							key={nodeId}
 							nodeId={nodeId}
+							nodeName={nodes[nodeId].name}
 							measurements={measurements[nodeId]}
 						/>
 					)
