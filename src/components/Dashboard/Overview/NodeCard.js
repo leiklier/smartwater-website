@@ -23,7 +23,12 @@ class NodeCard extends Component {
 		const { loading } = this.state
 		return (
 			<Card
-				style={{ width: '500px', margin: '20px', display: 'inline-block' }}
+				style={{
+					width: '500px',
+					marginLeft: '20px',
+					marginTop: '20px',
+					display: 'inline-block'
+				}}
 				title={
 					<Link
 						style={{ color: 'black' }}
@@ -42,6 +47,7 @@ class NodeCard extends Component {
 					</Link>
 				}
 			>
+				<h3>Last measurements:</h3>
 				{Object.keys(measurements).map(type => {
 					return (
 						<p key={type}>
