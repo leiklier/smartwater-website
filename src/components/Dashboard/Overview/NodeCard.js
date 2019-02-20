@@ -29,7 +29,7 @@ class NodeCard extends Component {
 						style={{ color: 'black' }}
 						to={{ search: queryString.stringify({ site: 'nodeview', nodeId }) }}
 					>
-						<Icon type="arrows-alt" />
+						<Icon type="arrows-alt" style={{ marginRight: '10px' }} />
 						{nodeName}
 					</Link>
 				}

@@ -1,24 +1,55 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { fetchNodes } from '../../../actions/nodesActions'
+import { Link } from 'react-router-dom'
+import { Layout, Icon } from 'antd'
+const { Header, Content } = Layout
+
+import {
+	MEASUREMENT_INTERVALS,
+	VALID_AGGREGATES
+} from '../../../config/constants'
+import { fetchMeasurementsAggregate } from '../../../actions/measurementsActions'
 
 @connect(store => {
 	return {
-		nodes: store.nodes.nodes,
-		fetching: store.nodes.fetching,
-		fetched: store.nodes.fetched,
-		error: store.nodes.error,
-		measurements: store.measurements,
-		nodeId: `${store.router.location.pathname.split('/')[3]}`
+		measurements: store.measurements
 	}
 })
 class Nodeview extends Component {
 	constructor(props) {
 		super(props)
 	}
+	componentWillMount() {
+		const { nodeId } = this.props
+
+		for (const intervalName in MEASUREMENT_INTERVALS) {
+			for (const aggregate of VALID_AGGREGATES) {
+				this.props.dispatch(
+					fetchMeasurementsAggregate(nodeId, aggregate, intervalName)
+				)
+			}
+		}
+	}
 	render() {
-		return <div>Hello from nodeview!</div>
+		const { nodeId, nodeName } = this.props
+		return (
+			<Layout>
+				<Header style={{ paddingLeft: 0 }}>
+					<Link style={{ color: 'grey', marginRight: '20px' }} to="/dashboard">
+						<Icon
+							type="left"
+							style={{ marginLeft: '15px', marginRight: '10px' }}
+						/>
+						Back to Overview
+					</Link>
+					<h2 style={{ color: 'white', display: 'inline-block' }}>
+						{nodeName}
+					</h2>
+				</Header>
+				<Content>bewdfjbnsdo</Content>
+			</Layout>
+		)
 	}
 }
 

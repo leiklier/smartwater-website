@@ -68,7 +68,7 @@ class Dashboard extends Component {
 		}
 	}
 	render() {
-		const { query, fetched, measurements } = this.props
+		const { query, fetched, measurements, nodes } = this.props
 		const { site, nodeId } = query
 
 		var currentSite = <Overview />
@@ -78,7 +78,7 @@ class Dashboard extends Component {
 			site === 'nodeview' &&
 			Object.keys(measurements).includes(nodeId)
 		) {
-			currentSite = <Nodeview nodeId={nodeId} />
+			currentSite = <Nodeview nodeId={nodeId} nodeName={nodes[nodeId].name}/>
 		}
 
 		return (
