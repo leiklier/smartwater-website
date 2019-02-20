@@ -5,6 +5,11 @@ import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import { Card, Icon } from 'antd'
 
+@connect(store => {
+	return {
+		measurements: store.measurements
+	}
+})
 class NodeCard extends Component {
 	constructor(props) {
 		super(props)
@@ -14,9 +19,11 @@ class NodeCard extends Component {
 	}
 	render() {
 		const { nodeId, nodeName } = this.props
+		const measurements = this.props.measurements[nodeId]
 		const { loading } = this.state
 		return (
 			<Card
+				style={{ width: '500px', margin: '20px', display: 'inline-block' }}
 				title={
 					<Link
 						style={{ color: 'black' }}
@@ -35,7 +42,16 @@ class NodeCard extends Component {
 					</Link>
 				}
 			>
-        Content
+				{Object.keys(measurements).map(type => {
+					return (
+						<p key={type}>
+							{type.replace(/_/, ' ').replace(/\w\S*/g, function(txt) {
+								return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+							})}
+							: {measurements[type].lastMeasurement.value}
+						</p>
+					)
+				})}
 			</Card>
 		)
 	}

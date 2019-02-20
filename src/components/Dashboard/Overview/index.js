@@ -40,7 +40,6 @@ class Overview extends Component {
 							key={nodeId}
 							nodeId={nodeId}
 							nodeName={nodes[nodeId].name}
-							measurements={measurements[nodeId]}
 						/>
 					)
 				})}
