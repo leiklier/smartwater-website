@@ -9,6 +9,7 @@ const { Header, Footer, Sider, Content } = Layout
 
 import Overview from './Overview'
 import Nodeview from './Nodeview'
+import Graphview from './Graphview'
 
 import { connect } from 'react-redux'
 import { fetchNodes } from '../../actions/nodesActions'
@@ -29,8 +30,8 @@ class Dashboard extends Component {
 	}
 
 	componentWillMount() {
-		const { query, fetched, nodes } = this.props
-		const { site, nodeId } = query
+		const { query, fetched, nodes, measurements } = this.props
+		const { site, nodeId, type } = query
 		if (!fetched) {
 			this.props.dispatch(fetchNodes())
 		}
@@ -47,11 +48,26 @@ class Dashboard extends Component {
 					})
 				})
 			)
+		} else if (
+			fetched &&
+			site === 'graphview' &&
+			measurements.length > 0 &&
+			(!Object.keys(nodes).includes(nodeId) ||
+				!Object.keys(measurements[nodeId]).includes(type))
+		) {
+			// nodeId or type in query is invalid, so redirect to overview
+			this.props.dispatch(
+				push({
+					search: queryString.stringify({
+						// Intentionally left empty
+					})
+				})
+			)
 		}
 	}
 	componentWillUpdate() {
-		const { query, fetched, nodes } = this.props
-		const { site, nodeId } = query
+		const { query, fetched, nodes, measurements } = this.props
+		const { site, nodeId, type } = query
 		if (
 			fetched &&
 			site === 'nodeview' &&
@@ -65,11 +81,26 @@ class Dashboard extends Component {
 					})
 				})
 			)
+		} else if (
+			fetched &&
+			site === 'graphview' &&
+			measurements.length > 0 &&
+			(!Object.keys(nodes).includes(nodeId) ||
+				!Object.keys(measurements[nodeId]).includes(type))
+		) {
+			// nodeId or type in query is invalid, so redirect to overview
+			this.props.dispatch(
+				push({
+					search: queryString.stringify({
+						// Intentionally left empty
+					})
+				})
+			)
 		}
 	}
 	render() {
 		const { query, fetched, measurements, nodes } = this.props
-		const { site, nodeId } = query
+		const { site, nodeId, type } = query
 
 		var currentSite = <Overview />
 
@@ -78,7 +109,15 @@ class Dashboard extends Component {
 			site === 'nodeview' &&
 			Object.keys(measurements).includes(nodeId)
 		) {
-			currentSite = <Nodeview nodeId={nodeId} nodeName={nodes[nodeId].name}/>
+			currentSite = <Nodeview nodeId={nodeId} nodeName={nodes[nodeId].name} />
+		} else if (
+			fetched &&
+			site === 'graphview' &&
+			Object.keys(measurements).includes(nodeId)
+		) {
+			currentSite = (
+				<Graphview nodeId={nodeId} nodeName={nodes[nodeId].name} type={type} />
+			)
 		}
 
 		return (
