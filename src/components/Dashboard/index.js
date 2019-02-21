@@ -9,7 +9,7 @@ const { Header, Footer, Sider, Content } = Layout
 
 import Overview from './Overview'
 import Nodeview from './Nodeview'
-import Graphview from './Graphview'
+import Graphview from './modals/Graphview'
 
 import { connect } from 'react-redux'
 import { fetchNodes } from '../../actions/nodesActions'
@@ -65,6 +65,7 @@ class Dashboard extends Component {
 			)
 		}
 	}
+
 	componentWillUpdate() {
 		const { query, fetched, nodes, measurements } = this.props
 		const { site, nodeId, type } = query
@@ -81,26 +82,12 @@ class Dashboard extends Component {
 					})
 				})
 			)
-		} else if (
-			fetched &&
-			site === 'graphview' &&
-			measurements.length > 0 &&
-			(!Object.keys(nodes).includes(nodeId) ||
-				!Object.keys(measurements[nodeId]).includes(type))
-		) {
-			// nodeId or type in query is invalid, so redirect to overview
-			this.props.dispatch(
-				push({
-					search: queryString.stringify({
-						// Intentionally left empty
-					})
-				})
-			)
 		}
 	}
+
 	render() {
 		const { query, fetched, measurements, nodes } = this.props
-		const { site, nodeId, type } = query
+		const { site, nodeId, type, modal } = query
 
 		var currentSite = <Overview nodes={nodes} measurements={measurements} />
 
@@ -116,18 +103,29 @@ class Dashboard extends Component {
 					measurements={measurements[nodeId]}
 				/>
 			)
-		} else if (
+		}
+
+		var modalElement = ''
+		if (
 			fetched &&
-			site === 'graphview' &&
-			Object.keys(measurements).includes(nodeId)
+			Object.keys(measurements).includes(nodeId) &&
+			Object.keys(measurements[nodeId]).includes(type) &&
+			modal === 'graphview'
 		) {
-			currentSite = (
-				<Graphview nodeId={nodeId} nodeName={nodes[nodeId].name} type={type} />
+			modalElement = (
+				<Graphview
+					nodeId={nodeId}
+					type={type}
+					site={site}
+					node={nodes[nodeId]}
+					measurement={measurements[nodeId][type]}
+				/>
 			)
 		}
 
 		return (
 			<Layout style={{ height: '100%' }}>
+				{modalElement}
 				<Content style={{ height: '100%' }}>{currentSite}</Content>
 			</Layout>
 		)

@@ -91,7 +91,12 @@ class MeasurementCard extends Component {
 					<Link
 						style={{ color: 'black' }}
 						to={{
-							search: queryString.stringify({ site: 'graphview', nodeId, type })
+							search: queryString.stringify({
+								site: 'nodeview',
+								nodeId,
+								type,
+								modal: 'graphview'
+							})
 						}}
 					>
 						<Icon type="arrows-alt" style={{ marginRight: '10px' }} />

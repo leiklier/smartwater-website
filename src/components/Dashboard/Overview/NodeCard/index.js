@@ -58,13 +58,26 @@ class NodeCard extends Component {
 				{Object.keys(measurements).map(type => {
 					const { value, fetched } = measurements[type].lastMeasurement
 					return (
-						<p key={type}>
-							<Icon type="arrows-alt" style={{ marginRight: '10px' }} />
-							{type.replace(/_/, ' ').replace(/\w\S*/g, function(txt) {
-								return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-							})}
-							: {fetched ? value : <Icon type="loading" />}
-						</p>
+						<Link
+							style={{ color: 'black' }}
+							to={{
+								search: queryString.stringify({
+									nodeId,
+									type,
+									modal: 'graphview'
+								})
+							}}
+						>
+							<p key={type}>
+								<Icon type="arrows-alt" style={{ marginRight: '10px' }} />
+								{type.replace(/_/, ' ').replace(/\w\S*/g, function(txt) {
+									return (
+										txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+									)
+								})}
+								: {fetched ? value : <Icon type="loading" />}
+							</p>
+						</Link>
 					)
 				})}
 			</Card>
