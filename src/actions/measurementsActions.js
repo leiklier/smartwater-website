@@ -138,17 +138,20 @@ export function fetchMeasurementsAggregate(
 	return (dispatch, getState) => {
 		if (!getState().measurements[nodeId]) return
 		if (!Object.keys(MEASUREMENT_INTERVALS).includes(intervalName)) return
+
 		types = types || Object.keys(getState().measurements[nodeId])
+		var typesToFetch = new Array()
+
 		for (const type of types) {
-			if (!Object.keys(getState().measurements[nodeId]).includes(type))
-				delete types[nodeId][type]
+			if (!Object.keys(getState().measurements[nodeId]).includes(type)) continue
+			typesToFetch.push(type)
 		}
 
 		dispatch({
 			type: FETCH_MEASUREMENTS_AGGREGATE,
 			payload: {
 				nodeId,
-				types,
+				types: typesToFetch,
 				intervalName,
 				aggregate
 			}
@@ -164,7 +167,7 @@ export function fetchMeasurementsAggregate(
 			`${nodeId}/` +
 			`${fromTimestamp}/` +
 			`?aggregate=${aggregate}` +
-			`&types=${types.join(',')}`
+			`&types=${typesToFetch.join(',')}`
 
 		return axios
 			.get(queryUrl)
@@ -173,7 +176,7 @@ export function fetchMeasurementsAggregate(
 					type: FETCH_MEASUREMENTS_AGGREGATE_FULFILLED,
 					payload: {
 						nodeId,
-						types,
+						types: typesToFetch,
 						data: response.data.data,
 						intervalName,
 						aggregate,
@@ -189,7 +192,7 @@ export function fetchMeasurementsAggregate(
 						error,
 						intervalName,
 						aggregate,
-						types
+						types: typesToFetch
 					}
 				})
 			})
