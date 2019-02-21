@@ -5,20 +5,36 @@ import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import { Card, Icon } from 'antd'
 
-import { fetchMeasurementsLast } from '../../../../actions/measurementsActions'
+import {
+	fetchMeasurementsLast,
+	fetchMeasurementsAggregate
+} from '../../../../actions/measurementsActions'
 
 @connect(
 	null,
 	(dispatch, ownProps) => {
+		const { nodeId, type, measurement } = ownProps
+		const { aggregates } = measurement
 		return {
 			initializeStore: () => {
 				dispatch(
 					fetchMeasurementsLast({
-						nodeId: ownProps.nodeId,
-						types: [ownProps.type],
+						nodeId,
+						types: [type],
 						initialize: true
 					})
 				)
+				for (const intervalName in aggregates) {
+					for (const aggregate in aggregates[intervalName]) {
+						if (aggregate !== 'duration' && aggregate !== 'textDisplay') {
+							dispatch(
+								fetchMeasurementsAggregate(nodeId, aggregate, intervalName, [
+									type
+								])
+							)
+						}
+					}
+				}
 			}
 		}
 	}

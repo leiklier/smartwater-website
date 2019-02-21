@@ -139,7 +139,7 @@ export function fetchMeasurementsAggregate(
 		if (!getState().measurements[nodeId]) return
 		if (!Object.keys(MEASUREMENT_INTERVALS).includes(intervalName)) return
 		types = types || Object.keys(getState().measurements[nodeId])
-		for (const type of types[nodeId]) {
+		for (const type of types) {
 			if (!Object.keys(getState().measurements[nodeId]).includes(type))
 				delete types[nodeId][type]
 		}

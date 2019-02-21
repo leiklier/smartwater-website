@@ -1,33 +1,14 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 
 import { Link } from 'react-router-dom'
 import { Layout, Icon } from 'antd'
 const { Header, Content } = Layout
 
-import {
-	MEASUREMENT_INTERVALS,
-	VALID_AGGREGATES
-} from '../../../config/constants'
-import { fetchMeasurementsAggregate } from '../../../actions/measurementsActions'
-
 import MeasurementCard from './MeasurementCard'
 
-@connect()
 class Nodeview extends Component {
 	constructor(props) {
 		super(props)
-	}
-	componentWillMount() {
-		const { nodeId } = this.props
-
-		for (const intervalName in MEASUREMENT_INTERVALS) {
-			for (const aggregate of VALID_AGGREGATES) {
-				this.props.dispatch(
-					fetchMeasurementsAggregate(nodeId, aggregate, intervalName)
-				)
-			}
-		}
 	}
 	render() {
 		const { nodeId, nodeData, measurements } = this.props
