@@ -5,15 +5,34 @@ import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import { Card, Icon } from 'antd'
 
-import { fetchMeasurementGraphView } from '../../../../actions/measurementsActions'
+import { fetchMeasurementsLast } from '../../../../actions/measurementsActions'
 
-@connect()
+@connect(
+	null,
+	(dispatch, ownProps) => {
+		return {
+			initializeStore: () => {
+				dispatch(
+					fetchMeasurementsLast({
+						nodeId: ownProps.nodeId,
+						types: [ownProps.type],
+						initialize: true
+					})
+				)
+			}
+		}
+	}
+)
 class MeasurementCard extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			loading: false
 		}
+	}
+
+	componentWillMount() {
+		this.props.initializeStore()
 	}
 
 	render() {
