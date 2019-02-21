@@ -7,11 +7,7 @@ import { Card, Icon } from 'antd'
 
 import { fetchMeasurementGraphView } from '../../../../actions/measurementsActions'
 
-@connect(store => {
-	return {
-		measurements: store.measurements
-	}
-})
+@connect()
 class MeasurementCard extends Component {
 	constructor(props) {
 		super(props)
@@ -21,7 +17,7 @@ class MeasurementCard extends Component {
 	}
 
 	render() {
-		const { nodeId, type } = this.props
+		const { nodeId, type, measurement } = this.props
 		const { loading } = this.state
 		return (
 			<Card
@@ -55,36 +51,27 @@ class MeasurementCard extends Component {
 					</Link>
 				}
 			>
-				<p>
-					Last measurement:{' '}
-					{this.props.measurements[nodeId][type].lastMeasurement.value}
-				</p>
+				<p>Last measurement: {measurement.lastMeasurement.value}</p>
 				<h3>Aggregates:</h3>
-				{Object.keys(this.props.measurements[nodeId][type].aggregates).map(
-					intervalName => {
-						return (
-							<div key={intervalName}>
-								<h4>{intervalName}</h4>
-								{Object.keys(
-									this.props.measurements[nodeId][type].aggregates[intervalName]
-								).map(aggregate => {
+				{Object.keys(measurement.aggregates).map(intervalName => {
+					return (
+						<div key={intervalName}>
+							<h4>{intervalName}</h4>
+							{Object.keys(measurement.aggregates[intervalName]).map(
+								aggregate => {
 									if (aggregate !== 'duration' && aggregate !== 'textDisplay')
 										return (
 											<span key={intervalName + aggregate}>
 												{aggregate}:{' '}
-												{
-													this.props.measurements[nodeId][type].aggregates[
-														intervalName
-													].value
-												}
+												{measurement.aggregates[intervalName].value}
 											</span>
 										)
 									else return ''
-								})}
-							</div>
-						)
-					}
-				)}
+								}
+							)}
+						</div>
+					)
+				})}
 			</Card>
 		)
 	}

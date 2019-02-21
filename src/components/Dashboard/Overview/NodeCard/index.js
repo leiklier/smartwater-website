@@ -1,15 +1,9 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 
 import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import { Card, Icon } from 'antd'
 
-@connect(store => {
-	return {
-		measurements: store.measurements
-	}
-})
 class NodeCard extends Component {
 	constructor(props) {
 		super(props)
@@ -18,8 +12,7 @@ class NodeCard extends Component {
 		}
 	}
 	render() {
-		const { nodeId, nodeName } = this.props
-		const measurements = this.props.measurements[nodeId]
+		const { nodeId, nodeData, measurements } = this.props
 		const { loading } = this.state
 		return (
 			<Card
@@ -35,7 +28,7 @@ class NodeCard extends Component {
 						to={{ search: queryString.stringify({ site: 'nodeview', nodeId }) }}
 					>
 						<Icon type="arrows-alt" style={{ marginRight: '10px' }} />
-						{nodeName}
+						{nodeData.name}
 					</Link>
 				}
 				loading={loading}

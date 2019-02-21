@@ -13,11 +13,7 @@ import { fetchMeasurementsAggregate } from '../../../actions/measurementsActions
 
 import MeasurementCard from './MeasurementCard'
 
-@connect(store => {
-	return {
-		measurements: store.measurements
-	}
-})
+@connect()
 class Nodeview extends Component {
 	constructor(props) {
 		super(props)
@@ -34,7 +30,8 @@ class Nodeview extends Component {
 		}
 	}
 	render() {
-		const { nodeId, nodeName, measurements } = this.props
+		const { nodeId, nodeData, measurements } = this.props
+		const { nodeName } = nodeData.name
 		return (
 			<Layout>
 				<Header style={{ paddingLeft: 0 }}>
@@ -50,12 +47,13 @@ class Nodeview extends Component {
 					</h2>
 				</Header>
 				<Content>
-					{Object.keys(measurements[nodeId]).map(type => {
+					{Object.keys(measurements).map(type => {
 						return (
 							<MeasurementCard
 								key={nodeId + type}
 								nodeId={nodeId}
 								type={type}
+								measurement={measurements[type]}
 							/>
 						)
 					})}

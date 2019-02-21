@@ -40,7 +40,7 @@ class Dashboard extends Component {
 			site === 'nodeview' &&
 			!Object.keys(nodes).includes(nodeId)
 		) {
-			// nodeId inn query is invalid, so redirect to overview
+			// nodeId in query is invalid, so redirect to overview
 			this.props.dispatch(
 				push({
 					search: queryString.stringify({
@@ -102,14 +102,20 @@ class Dashboard extends Component {
 		const { query, fetched, measurements, nodes } = this.props
 		const { site, nodeId, type } = query
 
-		var currentSite = <Overview />
+		var currentSite = <Overview nodes={nodes} measurements={measurements} />
 
 		if (
 			fetched &&
 			site === 'nodeview' &&
 			Object.keys(measurements).includes(nodeId)
 		) {
-			currentSite = <Nodeview nodeId={nodeId} nodeName={nodes[nodeId].name} />
+			currentSite = (
+				<Nodeview
+					nodeId={nodeId}
+					nodeData={nodes[nodeId]}
+					measurements={measurements[nodeId]}
+				/>
+			)
 		} else if (
 			fetched &&
 			site === 'graphview' &&

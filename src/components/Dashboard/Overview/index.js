@@ -8,15 +8,7 @@ const { Header, Content } = Layout
 
 import NodeCard from './NodeCard'
 
-@connect(store => {
-	return {
-		nodes: store.nodes.nodes,
-		fetchingNodes: store.nodes.fetching,
-		fetchedNodes: store.nodes.fetched,
-		errorNodes: store.nodes.error,
-		measurements: store.measurements
-	}
-})
+@connect()
 class Overview extends Component {
 	constructor(props) {
 		super(props)
@@ -46,7 +38,8 @@ class Overview extends Component {
 							<NodeCard
 								key={nodeId}
 								nodeId={nodeId}
-								nodeName={nodes[nodeId].name}
+								nodeData={nodes[nodeId]}
+								measurements={measurements[nodeId]}
 							/>
 						)
 					})}
