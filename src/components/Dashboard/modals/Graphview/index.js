@@ -3,7 +3,7 @@ import { Modal } from 'antd'
 
 import queryString from 'query-string'
 
-import { push } from 'connected-react-router'
+import { goBack } from 'connected-react-router'
 import { connect } from 'react-redux'
 
 @connect(
@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 		return {
 			handleClose: () =>
 				dispatch(
-					push({
+					goBack({
 						search: queryString.stringify({
 							nodeId,
 							type,

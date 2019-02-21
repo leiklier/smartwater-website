@@ -57,7 +57,7 @@ class MeasurementCard extends Component {
 		this.state = {
 			loading: false,
 			aggregateIntervalId: false,
-			aggregateIntervalDelay: 5 * 1000
+			aggregateIntervalDelay: 30 * 1000
 		}
 	}
 
