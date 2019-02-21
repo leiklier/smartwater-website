@@ -34,6 +34,19 @@ import {
 						}
 					}
 				}
+			},
+			fetchAggregates: () => {
+				for (const intervalName in aggregates) {
+					for (const aggregate in aggregates[intervalName]) {
+						if (aggregate !== 'duration' && aggregate !== 'textDisplay') {
+							dispatch(
+								fetchMeasurementsAggregate(nodeId, aggregate, intervalName, [
+									type
+								])
+							)
+						}
+					}
+				}
 			}
 		}
 	}
@@ -42,12 +55,22 @@ class MeasurementCard extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			loading: false
+			loading: false,
+			aggregateIntervalId: false,
+			aggregateIntervalDelay: 5 * 1000
 		}
 	}
 
 	componentWillMount() {
 		this.props.initializeStore()
+		var aggregateIntervalId = setInterval(
+			this.props.fetchAggregates,
+			this.state.aggregateIntervalDelay
+		)
+		this.setState({ aggregateIntervalId })
+	}
+	componentWillUnMount() {
+		clearInterval(this.state.aggregateIntervalId)
 	}
 
 	render() {
