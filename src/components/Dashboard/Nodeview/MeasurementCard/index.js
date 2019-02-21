@@ -91,14 +91,14 @@ class MeasurementCard extends Component {
 				{Object.keys(measurement.aggregates).map(intervalName => {
 					return (
 						<div key={intervalName}>
-							<h4>{intervalName}</h4>
+							<h4>{measurement.aggregates[intervalName].textDisplay}</h4>
 							{Object.keys(measurement.aggregates[intervalName]).map(
 								aggregate => {
 									if (aggregate !== 'duration' && aggregate !== 'textDisplay')
 										return (
 											<span key={intervalName + aggregate}>
 												{aggregate}:{' '}
-												{measurement.aggregates[intervalName].value}
+												{measurement.aggregates[intervalName][aggregate].value}
 											</span>
 										)
 									else return ''
