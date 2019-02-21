@@ -69,7 +69,7 @@ class MeasurementCard extends Component {
 		)
 		this.setState({ aggregateIntervalId })
 	}
-	componentWillUnMount() {
+	componentWillUnmount() {
 		clearInterval(this.state.aggregateIntervalId)
 	}
 
