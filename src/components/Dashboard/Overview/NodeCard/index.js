@@ -41,8 +41,8 @@ class NodeCard extends Component {
 						style={{ color: 'black' }}
 						to={{ search: queryString.stringify({ site: 'nodeview', nodeId }) }}
 					>
-						<Icon type="arrows-alt" style={{ marginRight: '10px' }} />
 						{nodeData.name}
+						<Icon type="right-square" style={{ marginLeft: '10px' }} />
 					</Link>
 				}
 				loading={loading}
@@ -59,6 +59,7 @@ class NodeCard extends Component {
 					const { value, fetched } = measurements[type].lastMeasurement
 					return (
 						<p key={type}>
+							<Icon type="arrows-alt" style={{ marginRight: '10px' }} />
 							{type.replace(/_/, ' ').replace(/\w\S*/g, function(txt) {
 								return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
 							})}
