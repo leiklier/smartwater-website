@@ -1,29 +1,13 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-
-import { fetchMeasurementsLast } from '../../../actions/measurementsActions'
 
 import { Layout, Icon } from 'antd'
 const { Header, Content } = Layout
 
 import NodeCard from './NodeCard'
 
-@connect()
 class Overview extends Component {
 	constructor(props) {
 		super(props)
-	}
-	componentWillMount() {
-		const { measurements } = this.props
-		for (const nodeId in measurements) {
-			this.props.dispatch(fetchMeasurementsLast({ nodeId, initialize: true }))
-		}
-	}
-	componentWillUpdate() {
-		const { measurements } = this.props
-		for (const nodeId in measurements) {
-			this.props.dispatch(fetchMeasurementsLast({ nodeId, initialize: true }))
-		}
 	}
 	render() {
 		const { nodes, measurements } = this.props

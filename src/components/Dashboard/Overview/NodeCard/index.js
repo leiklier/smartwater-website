@@ -1,15 +1,31 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
 import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import { Card, Icon } from 'antd'
+import { fetchMeasurementsLast } from '../../../../actions/measurementsActions'
 
+@connect(
+	null,
+	(dispatch, ownProps) => {
+		return {
+			initializeStore: () =>
+				dispatch(
+					fetchMeasurementsLast({ nodeId: ownProps.nodeId, initialize: true })
+				)
+		}
+	}
+)
 class NodeCard extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			loading: false
 		}
+	}
+	componentWillMount() {
+		this.props.initializeStore()
 	}
 	render() {
 		const { nodeId, nodeData, measurements } = this.props

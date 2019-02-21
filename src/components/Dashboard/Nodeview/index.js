@@ -31,7 +31,6 @@ class Nodeview extends Component {
 	}
 	render() {
 		const { nodeId, nodeData, measurements } = this.props
-		const { nodeName } = nodeData.name
 		return (
 			<Layout>
 				<Header style={{ paddingLeft: 0 }}>
@@ -43,7 +42,7 @@ class Nodeview extends Component {
 						Back to Overview
 					</Link>
 					<h2 style={{ color: 'white', display: 'inline-block' }}>
-						{nodeName}
+						{nodeData.name}
 					</h2>
 				</Header>
 				<Content>
