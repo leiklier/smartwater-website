@@ -148,7 +148,6 @@ export default function reducer(
 			newState[nodeId][type].lastMeasurement = {
 				...newState[nodeId][type].lastMeasurement,
 				fetching: true,
-				fetched: false,
 				error: null
 			}
 		}
@@ -202,7 +201,6 @@ export default function reducer(
 			newState[nodeId][type].aggregates[intervalName][aggregate] = {
 				...newState[nodeId][type].aggregates[intervalName][aggregate],
 				fetching: true,
-				fetched: false,
 				error: null
 			}
 		}

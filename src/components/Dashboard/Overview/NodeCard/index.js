@@ -9,11 +9,9 @@ import { fetchMeasurementsLast } from '../../../../actions/measurementsActions'
 @connect(
 	null,
 	(dispatch, ownProps) => {
+		const { nodeId } = ownProps
 		return {
-			initializeStore: () =>
-				dispatch(
-					fetchMeasurementsLast({ nodeId: ownProps.nodeId, initialize: true })
-				)
+			initializeStore: () => dispatch(fetchMeasurementsLast({ nodeId }))
 		}
 	}
 )
@@ -58,12 +56,13 @@ class NodeCard extends Component {
 			>
 				<h3>Last measurements:</h3>
 				{Object.keys(measurements).map(type => {
+					const { value, fetched } = measurements[type].lastMeasurement
 					return (
 						<p key={type}>
 							{type.replace(/_/, ' ').replace(/\w\S*/g, function(txt) {
 								return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
 							})}
-							: {measurements[type].lastMeasurement.value}
+							: {fetched ? value : <Icon type="loading" />}
 						</p>
 					)
 				})}

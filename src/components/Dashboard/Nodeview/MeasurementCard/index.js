@@ -20,8 +20,7 @@ import {
 				dispatch(
 					fetchMeasurementsLast({
 						nodeId,
-						types: [type],
-						initialize: true
+						types: [type]
 					})
 				)
 				for (const intervalName in aggregates) {
@@ -53,7 +52,10 @@ class MeasurementCard extends Component {
 
 	render() {
 		const { nodeId, type, measurement } = this.props
+		const { lastMeasurement } = measurement
+
 		const { loading } = this.state
+
 		return (
 			<Card
 				style={{
@@ -86,7 +88,14 @@ class MeasurementCard extends Component {
 					</Link>
 				}
 			>
-				<p>Last measurement: {measurement.lastMeasurement.value}</p>
+				<p>
+					Last measurement:{' '}
+					{lastMeasurement.fetched ? (
+						lastMeasurement.value
+					) : (
+						<Icon type="loading" />
+					)}
+				</p>
 				<h3>Aggregates:</h3>
 				{Object.keys(measurement.aggregates).map(intervalName => {
 					return (
@@ -94,14 +103,20 @@ class MeasurementCard extends Component {
 							<h4>{measurement.aggregates[intervalName].textDisplay}</h4>
 							{Object.keys(measurement.aggregates[intervalName]).map(
 								aggregate => {
-									if (aggregate !== 'duration' && aggregate !== 'textDisplay')
+									if (aggregate !== 'duration' && aggregate !== 'textDisplay') {
+										const aggregateData =
+											measurement.aggregates[intervalName][aggregate]
 										return (
 											<span key={intervalName + aggregate}>
 												{aggregate}:{' '}
-												{measurement.aggregates[intervalName][aggregate].value}
+												{aggregateData.fetched ? (
+													aggregateData.value
+												) : (
+													<Icon type="loading" />
+												)}
 											</span>
 										)
-									else return ''
+									} else return ''
 								}
 							)}
 						</div>
