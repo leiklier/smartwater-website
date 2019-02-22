@@ -43,11 +43,18 @@ export function refreshMeasurements() {
 export function fetchMeasurementsGraphView(args) {
 	return (dispatch, getState) => {
 		var { nodeId, types, fromTimestamp, toTimestamp } = args
+
 		types = types || Object.keys(getState().measurements[nodeId])
+
+		fromTimestamp =
+			fromTimestamp ||
+			getState().measurements[nodeId][types[0]].graphView.fromTimestamp
+
 		dispatch({
 			type: FETCH_MEASUREMENTS_GRAPHVIEW,
 			payload: { nodeId, types }
 		})
+
 		var queryUrl =
 			apiConfig.host +
 			apiConfig.basePath +

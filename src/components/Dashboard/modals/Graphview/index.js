@@ -24,7 +24,8 @@ import { fetchMeasurementsGraphView } from '../../../../actions/measurementsActi
 						})
 					})
 				),
-			fetchGraphView: (fromTimestamp, toTimestamp) => {
+			fetchGraphView: args => {
+				const { fromTimestamp, toTimestamp } = args
 				dispatch(
 					fetchMeasurementsGraphView({
 						nodeId,
@@ -64,25 +65,64 @@ class Graphview extends Component {
 			>
 				<Row type="flex" justify="space-around" align="middle">
 					<Col>
-						{liveReload ? <DatePicker /> : <RangePicker showTime />}
+						{liveReload ? (
+							<DatePicker placeholder="Start Date" showTime />
+						) : (
+							<RangePicker showTime />
+						)}
 
 						<Switch
 							style={{ marginLeft: '10px' }}
 							checkedChildren={<Icon type="sync" />}
 							unCheckedChildren={<Icon type="disconnect" />}
+							checked={liveReload}
+							onChange={checked =>
+								fetchGraphView({ toTimestamp: checked ? false : Date.now() })
+							}
 						/>
 					</Col>
 				</Row>
+
 				<Row type="flex" justify="space-around" align="middle">
 					<Col>Presets:{liveReload}</Col>
+
 					<Col>
-						<Button>Last Day</Button>
+						<Button
+							onClick={() =>
+								fetchGraphView({
+									fromTimestamp: Date.now() - 1000 * 60 * 60 * 24,
+									toTimestamp: false
+								})
+							}
+						>
+							Last Day
+						</Button>
 					</Col>
+
 					<Col>
-						<Button>Last Week</Button>
+						<Button
+							onClick={() =>
+								fetchGraphView({
+									fromTimestamp: Date.now() - 1000 * 60 * 60 * 24 * 7,
+									toTimestamp: false
+								})
+							}
+						>
+							Last Week
+						</Button>
 					</Col>
+
 					<Col>
-						<Button>Last Month</Button>
+						<Button
+							onClick={() =>
+								fetchGraphView({
+									fromTimestamp: Date.now() - 1000 * 60 * 60 * 24 * 30,
+									toTimestamp: false
+								})
+							}
+						>
+							Last 30 Days
+						</Button>
 					</Col>
 				</Row>
 			</Modal>
