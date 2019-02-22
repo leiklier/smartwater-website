@@ -118,7 +118,7 @@ class Dashboard extends Component {
 					type={type}
 					site={site}
 					node={nodes[nodeId]}
-					measurement={measurements[nodeId][type]}
+					graphView={measurements[nodeId][type].graphView}
 				/>
 			)
 		}

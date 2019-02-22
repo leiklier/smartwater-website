@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
-import { Modal } from 'antd'
+import { Modal, DatePicker, Switch, Button, Icon, Row, Col } from 'antd'
+const { RangePicker } = DatePicker
 
 import queryString from 'query-string'
 
 import { goBack } from 'connected-react-router'
 import { connect } from 'react-redux'
+
+import { fetchMeasurementsGraphView } from '../../../../actions/measurementsActions'
 
 @connect(
 	null,
@@ -20,7 +23,17 @@ import { connect } from 'react-redux'
 							site
 						})
 					})
+				),
+			fetchGraphView: (fromTimestamp, toTimestamp) => {
+				dispatch(
+					fetchMeasurementsGraphView({
+						nodeId,
+						types: [type],
+						fromTimestamp,
+						toTimestamp
+					})
 				)
+			}
 		}
 	}
 )
@@ -30,7 +43,18 @@ class Graphview extends Component {
 	}
 
 	render() {
-		const { nodeId, type, site, node, measurement, handleClose } = this.props
+		const {
+			nodeId,
+			type,
+			site,
+			node,
+			graphView,
+			handleClose,
+			fetchGraphView
+		} = this.props
+
+		const liveReload = !graphView.toTimestamp
+
 		return (
 			<Modal
 				visible={true}
@@ -38,7 +62,29 @@ class Graphview extends Component {
 				footer={null}
 				onCancel={handleClose}
 			>
-				hello world
+				<Row type="flex" justify="space-around" align="middle">
+					<Col>
+						{liveReload ? <DatePicker /> : <RangePicker showTime />}
+
+						<Switch
+							style={{ marginLeft: '10px' }}
+							checkedChildren={<Icon type="sync" />}
+							unCheckedChildren={<Icon type="disconnect" />}
+						/>
+					</Col>
+				</Row>
+				<Row type="flex" justify="space-around" align="middle">
+					<Col>Presets:{liveReload}</Col>
+					<Col>
+						<Button>Last Day</Button>
+					</Col>
+					<Col>
+						<Button>Last Week</Button>
+					</Col>
+					<Col>
+						<Button>Last Month</Button>
+					</Col>
+				</Row>
 			</Modal>
 		)
 	}
