@@ -7,6 +7,8 @@ import queryString from 'query-string'
 import { goBack } from 'connected-react-router'
 import { connect } from 'react-redux'
 
+import moment from 'moment'
+
 import { fetchMeasurementsGraphView } from '../../../../actions/measurementsActions'
 
 @connect(
@@ -53,6 +55,7 @@ class Graphview extends Component {
 			handleClose,
 			fetchGraphView
 		} = this.props
+		const { fromTimestamp, toTimestamp } = graphView
 
 		const liveReload = !graphView.toTimestamp
 
@@ -66,9 +69,25 @@ class Graphview extends Component {
 				<Row type="flex" justify="space-around" align="middle">
 					<Col>
 						{liveReload ? (
-							<DatePicker placeholder="Start Date" showTime />
+							<DatePicker
+								value={moment(fromTimestamp)}
+								onChange={date => {
+									fetchGraphView({ fromTimestamp: date.valueOf() })
+								}}
+								placeholder="Start Date"
+								showTime
+							/>
 						) : (
-							<RangePicker showTime />
+							<RangePicker
+								value={[moment(fromTimestamp), moment(toTimestamp)]}
+								onChange={date => {
+									fetchGraphView({
+										fromTimestamp: date[0].valueOf(),
+										toTimestamp: date[1].valueOf()
+									})
+								}}
+								showTime
+							/>
 						)}
 
 						<Switch

@@ -49,7 +49,7 @@ export function newMeasurementElement(types = false) {
 
 				measurements[type].graphView = {
 					data: new Array(),
-					fromTimestamp: Date.now() - 60 * 60 * 24,
+					fromTimestamp: Date.now() - 1000 * 60 * 60 * 24,
 					toTimestamp: false,
 					fetching: false,
 					fetched: false,
