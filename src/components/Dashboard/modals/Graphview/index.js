@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Modal, DatePicker, Switch, Button, Icon, Row, Col } from 'antd'
 const { RangePicker } = DatePicker
+import { Line } from 'react-chartjs-2'
 
 import queryString from 'query-string'
 
@@ -59,6 +60,11 @@ class Graphview extends Component {
 
 		const liveReload = !graphView.toTimestamp
 
+		const chartDataY = graphView.data.map(measurement => measurement.value)
+		const chartDataX = graphView.data.map(
+			measurement => measurement.timeCreated
+		)
+
 		return (
 			<Modal
 				visible={true}
@@ -66,6 +72,20 @@ class Graphview extends Component {
 				footer={null}
 				onCancel={handleClose}
 			>
+				<Row type="flex" justify="space-around" align="middle">
+					<Line
+						data={{
+							labels: chartDataX,
+							datasets: [
+								{
+									label: node.name,
+									data: chartDataY
+								}
+							]
+						}}
+					/>
+				</Row>
+
 				<Row type="flex" justify="space-around" align="middle">
 					<Col>
 						{liveReload ? (
