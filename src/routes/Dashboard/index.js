@@ -19,9 +19,9 @@ import { fetchNodes } from '../../redux/actions'
 		query: queryString.parse(store.router.location.search),
 		nodes: store.nodes.nodes,
 		measurements: store.measurements.measurements,
-		fetching: store.nodes.fetching,
-		fetched: store.nodes.fetched,
-		error: store.nodes.error
+		fetchingNodes: store.nodes.fetching,
+		fetchedNodes: store.nodes.fetched,
+		errorNodes: store.nodes.error
 	}
 })
 class Dashboard extends Component {
@@ -30,13 +30,15 @@ class Dashboard extends Component {
 	}
 
 	componentWillMount() {
-		const { query, fetched, nodes, measurements } = this.props
+		const { query, fetchedNodes, nodes, measurements } = this.props
 		const { site, nodeId, type } = query
-		if (!fetched) {
+
+		if (!fetchedNodes) {
 			this.props.dispatch(fetchNodes())
 		}
+
 		if (
-			fetched &&
+			fetchedNodes &&
 			site === 'nodeview' &&
 			!Object.keys(nodes).includes(nodeId)
 		) {
@@ -49,7 +51,7 @@ class Dashboard extends Component {
 				})
 			)
 		} else if (
-			fetched &&
+			fetchedNodes &&
 			site === 'graphview' &&
 			measurements.length > 0 &&
 			(!Object.keys(nodes).includes(nodeId) ||
@@ -67,10 +69,10 @@ class Dashboard extends Component {
 	}
 
 	componentWillUpdate() {
-		const { query, fetched, nodes, measurements } = this.props
+		const { query, fetchedNodes, nodes, measurements } = this.props
 		const { site, nodeId, type } = query
 		if (
-			fetched &&
+			fetchedNodes &&
 			site === 'nodeview' &&
 			!Object.keys(nodes).includes(nodeId)
 		) {
@@ -86,13 +88,13 @@ class Dashboard extends Component {
 	}
 
 	render() {
-		const { query, fetched, measurements, nodes } = this.props
+		const { query, fetchedNodes, measurements, nodes } = this.props
 		const { site, nodeId, type, modal } = query
 
 		var currentSite = <Overview nodes={nodes} measurements={measurements} />
 
 		if (
-			fetched &&
+			fetchedNodes &&
 			site === 'nodeview' &&
 			Object.keys(measurements).includes(nodeId)
 		) {
@@ -107,7 +109,7 @@ class Dashboard extends Component {
 
 		var modalElement = ''
 		if (
-			fetched &&
+			fetchedNodes &&
 			Object.keys(measurements).includes(nodeId) &&
 			Object.keys(measurements[nodeId]).includes(type) &&
 			modal === 'graphview'
