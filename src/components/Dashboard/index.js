@@ -18,7 +18,7 @@ import { fetchNodes } from '../../redux/actions'
 	return {
 		query: queryString.parse(store.router.location.search),
 		nodes: store.nodes.nodes,
-		measurements: store.measurements,
+		measurements: store.measurements.measurements,
 		fetching: store.nodes.fetching,
 		fetched: store.nodes.fetched,
 		error: store.nodes.error

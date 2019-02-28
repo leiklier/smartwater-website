@@ -10,12 +10,12 @@ export default function refreshMeasurements(state, action) {
 		const { types } = action.payload
 
 		for (const nodeId in types) {
-			if (!newState[nodeId]) {
-				newState[nodeId] = createMeasurementElement(types[nodeId])
+			if (!newState.measurements[nodeId]) {
+				newState.measurements[nodeId] = createMeasurementElement(types[nodeId])
 				continue
 			}
 			for (const type of types[nodeId]) {
-				if (!newState[nodeId][types]) {
+				if (!newState.measurements[nodeId][types]) {
 					// TODO: Add new type here
 				}
 			}

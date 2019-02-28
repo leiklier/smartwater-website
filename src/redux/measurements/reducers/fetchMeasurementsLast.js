@@ -13,9 +13,9 @@ export default function fetchMeasurementsLast(state, action) {
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
-			if (!Object.keys(newState[nodeId]).includes(type)) continue
-			newState[nodeId][type].lastMeasurement = {
-				...newState[nodeId][type].lastMeasurement,
+			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
+			newState.measurements[nodeId][type].lastMeasurement = {
+				...newState.measurements[nodeId][type].lastMeasurement,
 				fetching: true,
 				error: null
 			}
@@ -29,11 +29,11 @@ export default function fetchMeasurementsLast(state, action) {
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
-			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
 			if (!Object.keys(data).includes(type)) data[type] = [{ value: false }]
 
-			newState[nodeId][type].lastMeasurement = {
-				...newState[nodeId][type].lastMeasurement,
+			newState.measurements[nodeId][type].lastMeasurement = {
+				...newState.measurements[nodeId][type].lastMeasurement,
 				...data[type][0],
 				fetching: false,
 				fetched: true,
@@ -49,10 +49,10 @@ export default function fetchMeasurementsLast(state, action) {
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
-			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
 
-			newState[nodeId][type].lastMeasurement = {
-				...newState[nodeId][type].lastMeasurement,
+			newState.measurements[nodeId][type].lastMeasurement = {
+				...newState.measurements[nodeId][type].lastMeasurement,
 				fetching: false,
 				fetched: false,
 				error

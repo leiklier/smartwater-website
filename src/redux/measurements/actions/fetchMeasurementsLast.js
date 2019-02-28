@@ -10,19 +10,20 @@ import {
 
 export default function fetchMeasurementsLast(args) {
 	return (dispatch, getState) => {
+		const { measurements } = getState().measurements
 		var { nodeId, initialize, types } = args
 
-		if (!getState().measurements[nodeId]) return
+		if (!measurements[nodeId]) return
 
-		types = types || Object.keys(getState().measurements[nodeId])
+		types = types || Object.keys(measurements[nodeId])
 		var typesToFetch = new Array()
 
 		for (const type of types) {
-			if (!Object.keys(getState().measurements[nodeId]).includes(type)) {
+			if (!Object.keys(measurements[nodeId]).includes(type)) {
 				continue
 			}
 			if (initialize) {
-				const { fetching, fetched } = getState().measurements[nodeId][
+				const { fetching, fetched } = measurements[nodeId][
 					type
 				].lastMeasurement
 				if ((fetched || fetching) && types.indexOf(type > -1)) continue

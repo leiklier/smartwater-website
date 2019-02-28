@@ -15,14 +15,16 @@ export default function fetchMeasurementsAggregate(
 	types = false
 ) {
 	return (dispatch, getState) => {
-		if (!getState().measurements[nodeId]) return
+		const { measurements } = getState().measurements
+
+		if (!measurements[nodeId]) return
 		if (!Object.keys(MEASUREMENT_INTERVALS).includes(intervalName)) return
 
-		types = types || Object.keys(getState().measurements[nodeId])
+		types = types || Object.keys(measurements[nodeId])
 		var typesToFetch = new Array()
 
 		for (const type of types) {
-			if (!Object.keys(getState().measurements[nodeId]).includes(type)) continue
+			if (!Object.keys(measurements[nodeId]).includes(type)) continue
 			typesToFetch.push(type)
 		}
 

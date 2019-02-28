@@ -10,13 +10,13 @@ import {
 
 export default function fetchMeasurementsGraphView(args) {
 	return (dispatch, getState) => {
+		const { measurements } = getState().measurements
 		var { nodeId, types, fromTimestamp, toTimestamp } = args
 
-		types = types || Object.keys(getState().measurements[nodeId])
+		types = types || Object.keys(measurements[nodeId])
 
 		fromTimestamp =
-			fromTimestamp ||
-			getState().measurements[nodeId][types[0]].graphView.fromTimestamp
+			fromTimestamp || measurements[nodeId][types[0]].graphView.fromTimestamp
 
 		dispatch({
 			type: FETCH_MEASUREMENTS_GRAPHVIEW,

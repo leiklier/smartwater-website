@@ -13,10 +13,10 @@ export default function fetchMeasurementsGraphview(state, action) {
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
-			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
 
-			newState[nodeId][type].graphView = {
-				...newState[nodeId][type].graphView,
+			newState.measurements[nodeId][type].graphView = {
+				...newState.measurements[nodeId][type].graphView,
 				fetching: true,
 				fetched: false,
 				error: null
@@ -31,11 +31,11 @@ export default function fetchMeasurementsGraphview(state, action) {
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
-			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
 			if (!Object.keys(data).includes(type)) data[type] = new Array()
 
-			newState[nodeId][type].graphView = {
-				...newState[nodeId][type].graphView,
+			newState.measurements[nodeId][type].graphView = {
+				...newState.measurements[nodeId][type].graphView,
 				data: data[type],
 				fromTimestamp,
 				toTimestamp,
@@ -52,10 +52,10 @@ export default function fetchMeasurementsGraphview(state, action) {
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
-			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
 
-			newState[nodeId][type].graphView = {
-				...newState[nodeId][type].graphView,
+			newState.measurements[nodeId][type].graphView = {
+				...newState.measurements[nodeId][type].graphView,
 				fetching: false,
 				fetched: false,
 				error: error

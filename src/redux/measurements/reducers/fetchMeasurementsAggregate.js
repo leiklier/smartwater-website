@@ -13,20 +13,20 @@ export default function fetchMeasurementsAggregate(state, action) {
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
-			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
 			if (
-				!Object.keys(newState[nodeId][type].aggregates).includes(intervalName)
+				!Object.keys(newState.measurements[nodeId][type].aggregates).includes(intervalName)
 			)
 				continue
 			if (
 				!Object.keys(
-					newState[nodeId][type].aggregates[intervalName]
+					newState.measurements[nodeId][type].aggregates[intervalName]
 				).includes(aggregate)
 			)
 				continue
 
-			newState[nodeId][type].aggregates[intervalName][aggregate] = {
-				...newState[nodeId][type].aggregates[intervalName][aggregate],
+			newState.measurements[nodeId][type].aggregates[intervalName][aggregate] = {
+				...newState.measurements[nodeId][type].aggregates[intervalName][aggregate],
 				fetching: true,
 				error: null
 			}
@@ -47,20 +47,20 @@ export default function fetchMeasurementsAggregate(state, action) {
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
-			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
 			if (
-				!Object.keys(newState[nodeId][type].aggregates).includes(intervalName)
+				!Object.keys(newState.measurements[nodeId][type].aggregates).includes(intervalName)
 			)
 				continue
 			if (
 				!Object.keys(
-					newState[nodeId][type].aggregates[intervalName]
+					newState.measurements[nodeId][type].aggregates[intervalName]
 				).includes(aggregate)
 			)
 				continue
 
-			newState[nodeId][type].aggregates[intervalName][aggregate] = {
-				...newState[nodeId][type].aggregates[intervalName][aggregate],
+			newState.measurements[nodeId][type].aggregates[intervalName][aggregate] = {
+				...newState.measurements[nodeId][type].aggregates[intervalName][aggregate],
 				fetching: false,
 				fetched: true,
 				error: null,
@@ -76,20 +76,20 @@ export default function fetchMeasurementsAggregate(state, action) {
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
-			if (!Object.keys(newState[nodeId]).includes(type)) continue
+			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
 			if (
-				!Object.keys(newState[nodeId][type].aggregates).includes(intervalName)
+				!Object.keys(newState.measurements[nodeId][type].aggregates).includes(intervalName)
 			)
 				continue
 			if (
 				!Object.keys(
-					newState[nodeId][type].aggregates[intervalName]
+					newState.measurements[nodeId][type].aggregates[intervalName]
 				).includes(aggregate)
 			)
 				continue
 
-			newState[nodeId][type].aggregates[intervalName][aggregate] = {
-				...newState[nodeId][type].aggregates[intervalName][aggregate],
+			newState.measurements[nodeId][type].aggregates[intervalName][aggregate] = {
+				...newState.measurements[nodeId][type].aggregates[intervalName][aggregate],
 				fetching: false,
 				fetched: false,
 				error: error

@@ -3,7 +3,12 @@ import fetchMeasurementsGraphview from './fetchMeasurementsGraphview'
 import fetchMeasurementsLast from './fetchMeasurementsLast'
 import fetchMeasurementsAggregate from './fetchMeasurementsAggregate'
 
-export default function reducer(state = new Object(), action) {
+export default function reducer(
+	state = {
+		measurements: new Object() // Sparce array with key=nodeId
+	},
+	action
+) {
 	return (
 		refreshMeasurements(state, action) ||
 		fetchMeasurementsGraphview(state, action) ||
