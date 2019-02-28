@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { Layout, Icon } from 'antd'
 const { Header, Content } = Layout
 
-import NodeCard from './NodeCard'
+import NodeCard from '../../../components/NodeCard'
 
 class Overview extends Component {
 	constructor(props) {

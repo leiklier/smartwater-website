@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import { Card, Icon } from 'antd'
-import { fetchMeasurementsLast } from '../../../../redux/actions'
+import { fetchMeasurementsLast } from '../../redux/actions'
 
 @connect(
 	null,

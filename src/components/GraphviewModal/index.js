@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 
 import moment from 'moment'
 
-import { fetchMeasurementsGraphView } from '../../../../redux/actions'
+import { fetchMeasurementsGraphView } from '../../redux/actions'
 
 @connect(
 	null,

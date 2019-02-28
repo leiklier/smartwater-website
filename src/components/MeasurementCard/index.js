@@ -8,7 +8,7 @@ import { Card, Icon } from 'antd'
 import {
 	fetchMeasurementsLast,
 	fetchMeasurementsAggregate
-} from '../../../../redux/actions'
+} from '../../redux/actions'
 
 @connect(
 	null,

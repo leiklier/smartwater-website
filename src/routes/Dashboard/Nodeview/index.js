@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Layout, Icon, Button } from 'antd'
 const { Header, Content } = Layout
 
-import MeasurementCard from './MeasurementCard'
+import MeasurementCard from '../../../components/MeasurementCard'
 @connect(
 	null,
 	dispatch => {

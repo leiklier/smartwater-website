@@ -9,7 +9,7 @@ const { Header, Footer, Sider, Content } = Layout
 
 import Overview from './Overview'
 import Nodeview from './Nodeview'
-import Graphview from './modals/Graphview'
+import Graphview from '../../components/GraphviewModal'
 
 import { connect } from 'react-redux'
 import { fetchNodes } from '../../redux/actions'
