@@ -12,7 +12,7 @@ import Nodeview from './Nodeview'
 import Graphview from './modals/Graphview'
 
 import { connect } from 'react-redux'
-import { fetchNodes } from '../../actions/nodesActions'
+import { fetchNodes } from '../../redux/actions'
 
 @connect(store => {
 	return {

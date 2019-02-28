@@ -4,30 +4,27 @@ import {
 	FETCH_NODES,
 	FETCH_NODES_FULFILLED,
 	FETCH_NODES_REJECTED
-} from '../actions/nodesActionTypes'
+} from '../types'
 
-export default function(
-	state = {
-		fetching: false,
-		fetched: false,
-		error: null,
-		nodes: new Object()
-	}, // Should be sparse array with key=nodeId
-	action
-) {
-	var newState = cloneDeep(state)
+export default function fetchNodes(state, action) {
 	switch (action.type) {
 	case FETCH_NODES: {
+		let newState = cloneDeep(state)
+
 		newState = {
 			...newState,
 			fetching: true,
 			fetched: false,
 			error: null
 		}
-		break
+
+		return newState
 	}
+
 	case FETCH_NODES_FULFILLED: {
 		const newNodes = action.payload
+		let newState = cloneDeep(state)
+
 		newState = {
 			...newState,
 			nodes: {
@@ -37,18 +34,25 @@ export default function(
 			fetching: false,
 			fetched: true
 		}
-		break
+
+		return newState
 	}
+
 	case FETCH_NODES_REJECTED: {
 		const { error } = action.payload
+		let newState = cloneDeep(state)
+
 		newState = {
 			...newState,
 			fetching: false,
 			fetched: false,
 			error: error
 		}
-		break
+
+		return newState
 	}
+
+	default:
+		return
 	}
-	return newState
 }

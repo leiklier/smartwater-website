@@ -4,7 +4,6 @@ import { routerMiddleware } from 'connected-react-router'
 
 import { createLogger } from 'redux-logger'
 import thunk from 'redux-thunk'
-// import promise from 'redux-promise-middleware'
 
 import createRootReducer from './reducers'
 

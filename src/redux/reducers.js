@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
 import { connectRouter } from 'connected-react-router'
 
-import measurements from './measurementsReducer'
-import nodes from './nodesReducer'
+import nodes from './nodes/reducers'
+import measurements from './measurements/reducers'
 
 export default history =>
 	combineReducers({

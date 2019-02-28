@@ -1,21 +1,23 @@
 import axios from 'axios'
 
-import { refreshMeasurements } from './measurementsActions'
+import { apiConfig } from '../../../config/constants'
 
-import { apiConfig } from '../config/constants'
+import { refreshMeasurements } from '../../measurements/actions'
+
 import {
 	FETCH_NODES,
 	FETCH_NODES_FULFILLED,
 	FETCH_NODES_REJECTED
-} from './nodesActionTypes'
+} from '../types'
 
-export function fetchNodes(args = {}) {
+export default function fetchNodes(args = {}) {
 	const { nodeIds } = args
 
 	const queryUrl = apiConfig.host + apiConfig.basePath + apiConfig.nodesPath
 
 	return dispatch => {
 		dispatch({ type: FETCH_NODES })
+
 		return axios
 			.get(queryUrl)
 			.then(response => {
