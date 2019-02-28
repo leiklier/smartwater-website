@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import './App.css'
+import './style.css'
 
 import { Layout } from 'antd'
 
-import Navigationbar from './components/Navigationbar'
-import Main from './Main.js'
+import Navigationbar from './Navigationbar'
+import Main from './Main'
 
 class App extends Component {
 	render() {
