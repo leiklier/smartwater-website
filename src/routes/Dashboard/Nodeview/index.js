@@ -27,7 +27,7 @@ class Nodeview extends Component {
 		super(props)
 	}
 	render() {
-		const { nodeId, nodeData, measurements, handleGoBack } = this.props
+		const { nodeId, node, measurements, handleGoBack } = this.props
 		return (
 			<Layout>
 				<Header>
@@ -44,7 +44,7 @@ class Nodeview extends Component {
 						Back to Overview
 					</Button>
 					<h2 style={{ color: 'white', display: 'inline-block' }}>
-						{nodeData.name}
+						{node.name}
 					</h2>
 				</Header>
 				<Content>

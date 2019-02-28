@@ -22,7 +22,7 @@ class Overview extends Component {
 							<NodeCard
 								key={nodeId}
 								nodeId={nodeId}
-								nodeData={nodes[nodeId]}
+								node={nodes[nodeId]}
 								measurements={measurements[nodeId]}
 							/>
 						)

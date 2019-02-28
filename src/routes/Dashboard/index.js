@@ -101,7 +101,7 @@ class Dashboard extends Component {
 			currentSite = (
 				<Nodeview
 					nodeId={nodeId}
-					nodeData={nodes[nodeId]}
+					node={nodes[nodeId]}
 					measurements={measurements[nodeId]}
 				/>
 			)

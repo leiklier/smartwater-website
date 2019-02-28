@@ -26,7 +26,7 @@ class NodeCard extends Component {
 		this.props.initializeStore()
 	}
 	render() {
-		const { nodeId, nodeData, measurements } = this.props
+		const { nodeId, node, measurements } = this.props
 		const { loading } = this.state
 		return (
 			<Card
@@ -41,7 +41,7 @@ class NodeCard extends Component {
 						style={{ color: 'black' }}
 						to={{ search: queryString.stringify({ site: 'nodeview', nodeId }) }}
 					>
-						{nodeData.name}
+						{node.name}
 						<Icon type="right-square" style={{ marginLeft: '10px' }} />
 					</Link>
 				}
