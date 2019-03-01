@@ -14,169 +14,102 @@ import Graphview from '../../components/GraphviewModal'
 import { connect } from 'react-redux'
 import { fetchNodes } from '../../redux/actions'
 
-@connect(store => {
-	return {
-		query: queryString.parse(store.router.location.search),
+@connect(
+	store => {
+		return {
+			query: queryString.parse(store.router.location.search),
 
-		nodes: store.nodes.nodes,
-		fetchingNodes: store.nodes.fetching,
-		fetchedNodes: store.nodes.fetched,
-		errorNodes: store.nodes.error,
+			nodes: store.nodes.nodes,
+			fetchingNodes: store.nodes.fetching,
+			fetchedNodes: store.nodes.fetched,
+			errorNodes: store.nodes.error,
 
-		measurements: store.measurements.measurements,
-		fetchingMeasurements: store.measurements.fetching,
-		fetchedMeasurements: store.measurements.fetched,
-		errorMeasurements: store.measurements.error
+			measurements: store.measurements.measurements,
+			fetchingMeasurements: store.measurements.fetching,
+			fetchedMeasurements: store.measurements.fetched,
+			errorMeasurements: store.measurements.error
+		}
+	},
+	(dispatch, ownProps) => {
+		const { fetchedNodes } = ownProps
+
+		return {
+			redirectToDashboard: () => {
+				dispatch(
+					push({
+						search: queryString.stringify({
+							// Intentionally left empty
+						})
+					})
+				)
+			},
+			fetchNodes: () => {
+				if (!fetchedNodes) dispatch(fetchNodes())
+			}
+		}
 	}
-})
+)
 class Dashboard extends Component {
 	constructor(props) {
 		super(props)
+		this.checkUrl = this.checkUrl.bind(this)
+	}
+
+	checkUrl() {
+		const {
+			query,
+
+			nodes,
+			fetchedNodes,
+
+			measurements,
+			fetchedMeasurements,
+
+			redirectToDashboard
+		} = this.props
+
+		const { site, modal, nodeId, type } = query
+
+		const validSites = ['nodeview']
+		const validModals = ['graphview']
+
+		if (site && !validSites.includes(site)) redirectToDashboard()
+		if (modal && !validModals.includes(modal)) redirectToDashboard()
+
+		if (
+			fetchedMeasurements &&
+			site === 'nodeview' &&
+			!Object.keys(measurements).includes(nodeId)
+		)
+			redirectToDashboard()
+
+		if (
+			fetchedMeasurements &&
+			modal === 'graphview' &&
+			(!Object.keys(measurements).includes(nodeId) ||
+				!Object.keys(measurements[nodeId]).includes(type))
+		)
+			redirectToDashboard()
 	}
 
 	componentWillMount() {
-		const {
-			query,
-			nodes,
-			fetchedNodes,
-			measurements,
-			fetchedMeasurements
-		} = this.props
-		const { site, modal, nodeId, type } = query
+		const { fetchNodes } = this.props
 
-		// TODO: There is too much hard coding and repetition here,
-		// a cleanup is long overdue
-
-		if (!fetchedNodes) {
-			this.props.dispatch(fetchNodes())
-		}
-
-		if (site && !['nodeview'].includes(site)) {
-			// invalid site
-			this.props.dispatch(
-				push({
-					search: queryString.stringify({
-						// Intentionally left empty
-					})
-				})
-			)
-		}
-
-		if (modal && !['graphview'].includes(modal)) {
-			// invalid modal
-			this.props.dispatch(
-				push({
-					search: queryString.stringify({
-						// Intentionally left empty
-					})
-				})
-			)
-		}
-
-		if (
-			fetchedMeasurements &&
-			site === 'nodeview' &&
-			!Object.keys(measurements).includes(nodeId)
-		) {
-			// nodeId in query is invalid, so redirect to overview
-			this.props.dispatch(
-				push({
-					search: queryString.stringify({
-						// Intentionally left empty
-					})
-				})
-			)
-		}
-
-		if (
-			fetchedMeasurements &&
-			modal === 'graphview' &&
-			(!Object.keys(measurements).includes(nodeId) ||
-				!Object.keys(measurements[nodeId]).includes(type))
-		) {
-			// nodeid or type in query is invalid, so redirect to overview
-			this.props.dispatch(
-				push({
-					search: querystring.stringify({
-						// intentionally left empty
-					})
-				})
-			)
-		}
+		fetchNodes()
+		this.checkUrl()
 	}
 
 	componentWillUpdate() {
-		const {
-			query,
-			fetchedNodes,
-			nodes,
-			measurements,
-			fetchedMeasurements
-		} = this.props
-		const { site, modal, nodeId, type } = query
-
-		// TODO: There is too much hard coding and repetition here,
-		// a cleanup is long overdue
-
-		if (
-			fetchedMeasurements &&
-			site === 'nodeview' &&
-			!Object.keys(measurements).includes(nodeId)
-		) {
-			// nodeid in query is invalid, so redirect to overview
-			this.props.dispatch(
-				push({
-					search: querystring.stringify({
-						// intentionally left empty
-					})
-				})
-			)
-		}
-
-		if (site && !['nodeview'].includes(site)) {
-			// invalid site
-			this.props.dispatch(
-				push({
-					search: queryString.stringify({
-						// Intentionally left empty
-					})
-				})
-			)
-		}
-
-		if (modal && !['graphview'].includes(modal)) {
-			// invalid modal
-			this.props.dispatch(
-				push({
-					search: queryString.stringify({
-						// Intentionally left empty
-					})
-				})
-			)
-		}
-
-		if (
-			fetchedMeasurements &&
-			modal === 'graphview' &&
-			(!Object.keys(measurements).includes(nodeId) ||
-				!Object.keys(measurements[nodeId]).includes(type))
-		) {
-			// nodeId or type in query is invalid, so redirect to overview
-			this.props.dispatch(
-				push({
-					search: querystring.stringify({
-						// intentionally left empty
-					})
-				})
-			)
-		}
+		this.checkUrl()
 	}
 
 	render() {
 		const {
 			query,
+
 			nodes,
 			fetchedNodes,
+
 			measurements,
 			fetchedMeasurements
 		} = this.props
@@ -198,14 +131,14 @@ class Dashboard extends Component {
 			)
 		}
 
-		var modalElement = ''
+		var currentModal = ''
 		if (
 			fetchedMeasurements &&
 			Object.keys(measurements).includes(nodeId) &&
 			Object.keys(measurements[nodeId]).includes(type) &&
 			modal === 'graphview'
 		) {
-			modalElement = (
+			currentModal = (
 				<Graphview
 					nodeId={nodeId}
 					type={type}
@@ -218,7 +151,7 @@ class Dashboard extends Component {
 
 		return (
 			<Layout style={{ height: '100%' }}>
-				{modalElement}
+				{currentModal}
 				<Content style={{ height: '100%' }}>{currentSite}</Content>
 			</Layout>
 		)
