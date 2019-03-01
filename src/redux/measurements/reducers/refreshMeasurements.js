@@ -27,6 +27,13 @@ export default function refreshMeasurements(state, action) {
 			}
 		}
 
+		newState = {
+			...newState,
+			fetching: false,
+			fetched: true,
+			error: null
+		}
+
 		return newState
 	}
 

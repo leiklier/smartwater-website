@@ -5,7 +5,10 @@ import fetchMeasurementsAggregate from './fetchMeasurementsAggregate'
 
 export default function reducer(
 	state = {
-		measurements: new Object() // Sparce array with key=nodeId
+		measurements: new Object(), // Sparce array with key=nodeId
+		fetching: false,
+		fetched: false,
+		error: null
 	},
 	action
 ) {

@@ -17,11 +17,16 @@ import { fetchNodes } from '../../redux/actions'
 @connect(store => {
 	return {
 		query: queryString.parse(store.router.location.search),
+
 		nodes: store.nodes.nodes,
-		measurements: store.measurements.measurements,
 		fetchingNodes: store.nodes.fetching,
 		fetchedNodes: store.nodes.fetched,
-		errorNodes: store.nodes.error
+		errorNodes: store.nodes.error,
+
+		measurements: store.measurements.measurements,
+		fetchingMeasurements: store.measurements.fetching,
+		fetchedMeasurements: store.measurements.fetched,
+		errorMeasurements: store.measurements.error
 	}
 })
 class Dashboard extends Component {
@@ -30,17 +35,48 @@ class Dashboard extends Component {
 	}
 
 	componentWillMount() {
-		const { query, fetchedNodes, nodes, measurements } = this.props
-		const { site, nodeId, type } = query
+		const {
+			query,
+			nodes,
+			fetchedNodes,
+			measurements,
+			fetchedMeasurements
+		} = this.props
+		const { site, modal, nodeId, type } = query
+
+		// TODO: There is too much hard coding and repetition here,
+		// a cleanup is long overdue
 
 		if (!fetchedNodes) {
 			this.props.dispatch(fetchNodes())
 		}
 
+		if (site && !['nodeview'].includes(site)) {
+			// invalid site
+			this.props.dispatch(
+				push({
+					search: queryString.stringify({
+						// Intentionally left empty
+					})
+				})
+			)
+		}
+
+		if (modal && !['graphview'].includes(modal)) {
+			// invalid modal
+			this.props.dispatch(
+				push({
+					search: queryString.stringify({
+						// Intentionally left empty
+					})
+				})
+			)
+		}
+
 		if (
-			fetchedNodes &&
+			fetchedMeasurements &&
 			site === 'nodeview' &&
-			!Object.keys(nodes).includes(nodeId)
+			!Object.keys(measurements).includes(nodeId)
 		) {
 			// nodeId in query is invalid, so redirect to overview
 			this.props.dispatch(
@@ -50,18 +86,19 @@ class Dashboard extends Component {
 					})
 				})
 			)
-		} else if (
-			fetchedNodes &&
-			site === 'graphview' &&
-			measurements.length > 0 &&
-			(!Object.keys(nodes).includes(nodeId) ||
+		}
+
+		if (
+			fetchedMeasurements &&
+			modal === 'graphview' &&
+			(!Object.keys(measurements).includes(nodeId) ||
 				!Object.keys(measurements[nodeId]).includes(type))
 		) {
-			// nodeId or type in query is invalid, so redirect to overview
+			// nodeid or type in query is invalid, so redirect to overview
 			this.props.dispatch(
 				push({
-					search: queryString.stringify({
-						// Intentionally left empty
+					search: querystring.stringify({
+						// intentionally left empty
 					})
 				})
 			)
@@ -69,14 +106,35 @@ class Dashboard extends Component {
 	}
 
 	componentWillUpdate() {
-		const { query, fetchedNodes, nodes, measurements } = this.props
-		const { site, nodeId, type } = query
+		const {
+			query,
+			fetchedNodes,
+			nodes,
+			measurements,
+			fetchedMeasurements
+		} = this.props
+		const { site, modal, nodeId, type } = query
+
+		// TODO: There is too much hard coding and repetition here,
+		// a cleanup is long overdue
+
 		if (
-			fetchedNodes &&
+			fetchedMeasurements &&
 			site === 'nodeview' &&
-			!Object.keys(nodes).includes(nodeId)
+			!Object.keys(measurements).includes(nodeId)
 		) {
-			// nodeId in query is invalid, so redirect to overview
+			// nodeid in query is invalid, so redirect to overview
+			this.props.dispatch(
+				push({
+					search: querystring.stringify({
+						// intentionally left empty
+					})
+				})
+			)
+		}
+
+		if (site && !['nodeview'].includes(site)) {
+			// invalid site
 			this.props.dispatch(
 				push({
 					search: queryString.stringify({
@@ -85,16 +143,49 @@ class Dashboard extends Component {
 				})
 			)
 		}
+
+		if (modal && !['graphview'].includes(modal)) {
+			// invalid modal
+			this.props.dispatch(
+				push({
+					search: queryString.stringify({
+						// Intentionally left empty
+					})
+				})
+			)
+		}
+
+		if (
+			fetchedMeasurements &&
+			modal === 'graphview' &&
+			(!Object.keys(measurements).includes(nodeId) ||
+				!Object.keys(measurements[nodeId]).includes(type))
+		) {
+			// nodeId or type in query is invalid, so redirect to overview
+			this.props.dispatch(
+				push({
+					search: querystring.stringify({
+						// intentionally left empty
+					})
+				})
+			)
+		}
 	}
 
 	render() {
-		const { query, fetchedNodes, measurements, nodes } = this.props
+		const {
+			query,
+			nodes,
+			fetchedNodes,
+			measurements,
+			fetchedMeasurements
+		} = this.props
 		const { site, nodeId, type, modal } = query
 
 		var currentSite = <Overview nodes={nodes} measurements={measurements} />
 
 		if (
-			fetchedNodes &&
+			fetchedMeasurements &&
 			site === 'nodeview' &&
 			Object.keys(measurements).includes(nodeId)
 		) {
@@ -109,7 +200,7 @@ class Dashboard extends Component {
 
 		var modalElement = ''
 		if (
-			fetchedNodes &&
+			fetchedMeasurements &&
 			Object.keys(measurements).includes(nodeId) &&
 			Object.keys(measurements[nodeId]).includes(type) &&
 			modal === 'graphview'
