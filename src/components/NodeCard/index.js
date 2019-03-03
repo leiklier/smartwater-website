@@ -4,14 +4,31 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import { Card, Icon } from 'antd'
-import { fetchMeasurementsLast } from '../../redux/actions'
+import {
+	fetchMeasurementsLast,
+	subscribeWebsocketMeasurements,
+	unsubscribeWebsocketMeasurements
+} from '../../redux/actions'
 
 @connect(
 	null,
 	(dispatch, ownProps) => {
-		const { nodeId } = ownProps
+		const { nodeId, measurements } = ownProps
+
 		return {
-			initializeStore: () => dispatch(fetchMeasurementsLast({ nodeId }))
+			fetchMeasurementsLast: () => dispatch(fetchMeasurementsLast({ nodeId })),
+			subscribeMeasurements: () =>
+				dispatch(
+					subscribeWebsocketMeasurements({
+						[nodeId]: Object.keys(measurements)
+					})
+				),
+			unsubscribeMeasurements: () =>
+				dispatch(
+					unsubscribeWebsocketMeasurements({
+						[nodeId]: Object.keys(measurements)
+					})
+				)
 		}
 	}
 )
@@ -22,9 +39,20 @@ class NodeCard extends Component {
 			loading: false
 		}
 	}
+
 	componentWillMount() {
-		this.props.initializeStore()
+		const { fetchMeasurementsLast, subscribeMeasurements } = this.props
+
+		subscribeMeasurements()
+		fetchMeasurementsLast()
 	}
+
+	componentWillUnmount() {
+		const { unsubscribeMeasurements } = this.props
+
+		unsubscribeMeasurements()
+	}
+
 	render() {
 		const { nodeId, node, measurements } = this.props
 		const { loading } = this.state
