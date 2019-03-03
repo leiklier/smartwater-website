@@ -9,3 +9,11 @@ export { default as fetchMeasurementsLast } from './fetchMeasurementsLast'
 export {
 	default as fetchMeasurementsAggregate
 } from './fetchMeasurementsAggregate'
+
+export {
+	default as subscribeWebsocketMeasurements
+} from './subscribeWebsocketMeasurements'
+
+export {
+	default as unsubscribeWebsocketMeasurements
+} from './unsubscribeWebsocketMeasurements'
