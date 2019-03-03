@@ -21,7 +21,7 @@ export default function websocketMeasurementsMiddleware() {
 		}
 
 		ws.onmessage = message => {
-			dispatch(message)
+			dispatch(JSON.parse(message.data))
 		}
 
 		switch (action.type) {
