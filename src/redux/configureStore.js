@@ -4,6 +4,7 @@ import { routerMiddleware } from 'connected-react-router'
 
 import { createLogger } from 'redux-logger'
 import thunk from 'redux-thunk'
+import { websocketMeasurementsMiddleware } from './measurements/middlewares'
 
 import createRootReducer from './reducers'
 
@@ -11,9 +12,9 @@ export const history = createBrowserHistory()
 
 const middleware = applyMiddleware(
 	routerMiddleware(history), // for dispatching history actions
-	// promise(),
 	thunk,
-	createLogger()
+	createLogger(),
+	websocketMeasurementsMiddleware()
 )
 
 export default function configureStore(preloadedState) {
