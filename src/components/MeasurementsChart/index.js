@@ -45,6 +45,11 @@ class MeasurementsChart extends Component {
 									type: 'time'
 								}
 							]
+						},
+						elements: {
+							line: {
+								tension: 0 // Disables bezier line smoothing
+							}
 						}
 					}}
 				/>
