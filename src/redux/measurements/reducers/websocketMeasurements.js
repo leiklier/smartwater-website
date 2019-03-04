@@ -6,6 +6,8 @@ import {
 	WEBSOCKET_MEASUREMENTS_RX
 } from '../types'
 
+import { INCOMING_DATA } from '../websocketActions'
+
 export default function websocketMeasurements(state, action) {
 	switch (action.type) {
 	case WEBSOCKET_MEASUREMENTS_OPEN: {
@@ -17,6 +19,47 @@ export default function websocketMeasurements(state, action) {
 	case WEBSOCKET_MEASUREMENTS_CLOSE: {
 		let newState = cloneDeep(state)
 		newState.websocket.connected = false
+		return newState
+	}
+
+	case WEBSOCKET_MEASUREMENTS_RX: {
+		let newState = cloneDeep(state)
+
+		switch (action.payload.action) {
+		case INCOMING_DATA: {
+			const {
+				nodeId,
+				type,
+				value,
+				position,
+				timeCreated
+			} = action.payload.data
+			const measurement = newState.measurements[nodeId][type]
+			let { lastMeasurement, graphView } = measurement
+
+			lastMeasurement = {
+				...lastMeasurement,
+				value,
+				timeCreated,
+				lastFetched: Date.now()
+			}
+
+			if (!graphView.toTimestamp)
+			// graphView should be live updated
+				graphView.data.unshift({ position, timeCreated, value })
+
+			newState.measurements[nodeId][type] = {
+				...measurement,
+				lastMeasurement,
+				graphView
+			}
+			break
+		}
+
+		default:
+			break
+		}
+
 		return newState
 	}
 
