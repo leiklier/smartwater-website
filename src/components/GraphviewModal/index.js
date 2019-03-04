@@ -71,6 +71,8 @@ class Graphview extends Component {
 				title={`${node.name} - ${type}`}
 				footer={null}
 				onCancel={handleClose}
+				width="75vw"
+				centered
 			>
 				<Row type="flex" justify="space-around" align="middle">
 					<Line
