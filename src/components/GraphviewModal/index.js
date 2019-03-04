@@ -28,7 +28,7 @@ import { fetchMeasurementsGraphView } from '../../redux/actions'
 						})
 					})
 				),
-			fetchGraphView: args => {
+			fetchGraphView: function(args = {}) {
 				const { fromTimestamp, toTimestamp } = args
 				dispatch(
 					fetchMeasurementsGraphView({
@@ -47,6 +47,11 @@ class Graphview extends Component {
 		super(props)
 	}
 
+	componentWillMount() {
+		const { graphView, fetchGraphView } = this.props
+		if (!graphView.fetched) fetchGraphView()
+	}
+
 	render() {
 		const {
 			nodeId,
@@ -57,7 +62,7 @@ class Graphview extends Component {
 			handleClose,
 			fetchGraphView
 		} = this.props
-		const { fromTimestamp, toTimestamp } = graphView
+		const { fromTimestamp, toTimestamp, fetching } = graphView
 
 		const liveReload = !graphView.toTimestamp
 
@@ -76,14 +81,17 @@ class Graphview extends Component {
 				centered
 			>
 				<Row type="flex" justify="space-around" align="middle">
-					<MeasurementsChart
-						measurementsCollection={[
-							{
-								nodeName: node.name,
-								data: graphView.data
-							}
-						]}
-					/>
+					<Col span={24}>
+						<MeasurementsChart
+							measurementsCollection={[
+								{
+									nodeName: node.name,
+									data: graphView.data
+								}
+							]}
+							loading={fetching}
+						/>
+					</Col>
 				</Row>
 
 				<Row type="flex" justify="space-around" align="middle">

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import { Line } from 'react-chartjs-2'
+import { Spin, Icon } from 'antd'
 
 class MeasurementsChart extends Component {
 	constructor(props) {
@@ -28,20 +29,26 @@ class MeasurementsChart extends Component {
 		}
 
 		return (
-			<Line
-				data={{
-					datasets
-				}}
-				options={{
-					scales: {
-						xAxes: [
-							{
-								type: 'time'
-							}
-						]
-					}
-				}}
-			/>
+			<Spin
+				indicator={<Icon type="loading" style={{ fontSize: '5vw' }} spin />}
+				size="large"
+				spinning={loading}
+			>
+				<Line
+					data={{
+						datasets
+					}}
+					options={{
+						scales: {
+							xAxes: [
+								{
+									type: 'time'
+								}
+							]
+						}
+					}}
+				/>
+			</Spin>
 		)
 	}
 }
