@@ -24,13 +24,42 @@ module.exports = env => {
 						}
 					},
 					{
-						test: /\.(scss|css)$/,
+						test: /\.css$/,
+						use: [
+							PLATFORM === 'production'
+								? MiniCssExtractPlugin.loader
+								: 'style-loader',
+							'css-loader'
+						]
+					},
+					{
+						test: /\.scss$/,
 						use: [
 							PLATFORM === 'production'
 								? MiniCssExtractPlugin.loader
 								: 'style-loader',
 							'css-loader',
 							'sass-loader'
+						]
+					},
+					{
+						test: /\.less$/,
+						use: [
+							{
+								loader:
+									PLATFORM === 'production'
+										? MiniCssExtractPlugin.loader
+										: 'style-loader'
+							},
+							{
+								loader: 'css-loader'
+							},
+							{
+								loader: 'less-loader',
+								options: {
+									javascriptEnabled: true
+								}
+							}
 						]
 					}
 				]
