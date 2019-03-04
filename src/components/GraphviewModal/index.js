@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { Modal, DatePicker, Switch, Button, Icon, Row, Col } from 'antd'
 const { RangePicker } = DatePicker
-import { Line } from 'react-chartjs-2'
+
+import MeasurementsChart from '../MeasurementsChart'
 
 import queryString from 'query-string'
 
@@ -75,16 +76,13 @@ class Graphview extends Component {
 				centered
 			>
 				<Row type="flex" justify="space-around" align="middle">
-					<Line
-						data={{
-							labels: chartDataX,
-							datasets: [
-								{
-									label: node.name,
-									data: chartDataY
-								}
-							]
-						}}
+					<MeasurementsChart
+						measurementsCollection={[
+							{
+								nodeName: node.name,
+								data: graphView.data
+							}
+						]}
 					/>
 				</Row>
 
