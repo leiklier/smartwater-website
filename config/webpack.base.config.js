@@ -49,8 +49,12 @@ module.exports = env => {
 				new webpack.HashedModuleIdsPlugin()
 			],
 			output: {
-				filename: '[name].bundle.[contenthash].js',
-				chunkFilename: '[name].chunk.bundle.[contenthash].js',
+				filename: process.env.production
+					? '[name].bundle.[contenthash].js'
+					: '[name].bundle.js',
+				chunkFilename: process.env.production
+					? '[name].chunk.bundle.[contenthash].js'
+					: '[name].chunk.bundle.js',
 				path: path.resolve(__dirname, '..', 'dist'),
 				publicPath: '/'
 			}
