@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, Icon } from 'antd'
 const { Header } = Layout
+
+import LogoSvg from '../../static/logo/logo.svg'
 
 @connect(store => {
 	// Gets routed to this.props
@@ -23,7 +25,21 @@ class Navigationbar extends Component {
 					selectedKeys={[pageVisiting]}
 				>
 					<Menu.Item key="/">
-						<Link to="/">Home</Link>
+						<Link to="/">
+							<Icon
+								style={{ verticalAlign: 'middle' }}
+								component={() => (
+									<LogoSvg
+										style={{
+											height: '40px',
+											width: 'auto',
+											margin: 'none'
+										}}
+									/>
+								)}
+							/>
+							SmartWater
+						</Link>
 					</Menu.Item>
 					<Menu.Item key="/dashboard">
 						<Link to="/dashboard">Dashboard</Link>
