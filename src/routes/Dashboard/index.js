@@ -12,7 +12,6 @@ import Nodeview from './Nodeview'
 import Graphview from '../../components/GraphviewModal'
 
 import { connect } from 'react-redux'
-import { fetchNodes } from '../../redux/actions'
 
 @connect(
 	store => {
@@ -42,9 +41,6 @@ import { fetchNodes } from '../../redux/actions'
 						})
 					})
 				)
-			},
-			fetchNodes: () => {
-				if (!fetchedNodes) dispatch(fetchNodes())
 			}
 		}
 	}
@@ -93,9 +89,6 @@ class Dashboard extends Component {
 	}
 
 	componentWillMount() {
-		const { fetchNodes } = this.props
-
-		fetchNodes()
 		this.checkUrl()
 	}
 

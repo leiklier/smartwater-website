@@ -2,7 +2,7 @@ import axios from 'axios'
 
 import { apiConfig } from '../../../config/constants'
 
-import { refreshMeasurements } from '../../measurements/actions'
+import { refreshMeasurements } from '../../actions'
 
 import {
 	FETCH_NODES,
