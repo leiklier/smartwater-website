@@ -100,7 +100,6 @@ class MeasurementRow extends Component {
 			<Row>
 				<Col span={10}>
 					<Link
-						style={{ color: 'rgba(0, 0, 0, .65)' }}
 						to={{
 							search: queryString.stringify({
 								nodeId,
@@ -109,13 +108,19 @@ class MeasurementRow extends Component {
 							})
 						}}
 					>
-						<Icon type="arrows-alt" />
-						{typeDisplay}
+						<Text>
+							<Icon type="arrows-alt" />
+							{typeDisplay}
+						</Text>
 					</Link>
 				</Col>
-				<Col span={6}>{valueElement}</Col>
 				<Col span={6}>
-					<TimeAgo date={timeCreated} />
+					<Text>{valueElement}</Text>
+				</Col>
+				<Col span={6}>
+					<Text>
+						<TimeAgo date={timeCreated} />
+					</Text>
 				</Col>
 			</Row>
 		)

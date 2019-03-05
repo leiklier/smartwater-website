@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 
 import { Link } from 'react-router-dom'
 import queryString from 'query-string'
-import { Card, Icon } from 'antd'
+import { Card, Icon, Typography } from 'antd'
+const { Title } = Typography
 
 import MeasurementRow from '../MeasurementRow'
 
@@ -60,10 +61,10 @@ class NodeCard extends Component {
 		const { nodeId, node, measurements } = this.props
 		const { loading } = this.state
 
-		// Generate MeasurementRows
-		var MeasurementRows = new Array()
 		const measurementsSettings = node.settings.measurements
 
+		// Generate Rows
+		var Rows = new Object() // key=purpose
 		for (const type in measurementsSettings) {
 			const lastMeasurement = measurements[type].lastMeasurement
 
@@ -76,9 +77,9 @@ class NodeCard extends Component {
 				lastFetched
 			} = lastMeasurement
 
-			const { format, tooHigh, tooLow } = measurementsSettings[type]
-
-			MeasurementRows.push(
+			const { format, purpose, tooHigh, tooLow } = measurementsSettings[type]
+			if (!Rows[purpose]) Rows[purpose] = new Array()
+			Rows[purpose].push(
 				<MeasurementRow
 					key={type}
 					nodeId={nodeId}
@@ -107,11 +108,14 @@ class NodeCard extends Component {
 				}}
 				title={
 					<Link
-						style={{ color: 'black' }}
-						to={{ search: queryString.stringify({ site: 'nodeview', nodeId }) }}
+						to={{
+							search: queryString.stringify({ site: 'nodeview', nodeId })
+						}}
 					>
-						{node.name}
-						<Icon type="right-square" style={{ marginLeft: '10px' }} />
+						<Title level={3}>
+							{node.name}
+							<Icon type="right-square" style={{ marginLeft: '10px' }} />
+						</Title>
 					</Link>
 				}
 				loading={loading}
@@ -123,8 +127,11 @@ class NodeCard extends Component {
 					</Link>
 				}
 			>
-				<h3>Last measurements:</h3>
-				{MeasurementRows.map(MeasurementRow => MeasurementRow)}
+				<Title level={4}>Status:</Title>
+				{Rows.STATUS.map(MeasurementRow => MeasurementRow)}
+
+				<Title level={4}>Last measurements:</Title>
+				{Rows.SENSOR.map(MeasurementRow => MeasurementRow)}
 			</Card>
 		)
 	}
