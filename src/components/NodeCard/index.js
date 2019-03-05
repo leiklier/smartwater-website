@@ -4,6 +4,9 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import { Card, Icon } from 'antd'
+
+import MeasurementRow from '../MeasurementRow'
+
 import {
 	fetchMeasurementsLast,
 	subscribeWebsocketMeasurements,
@@ -56,6 +59,44 @@ class NodeCard extends Component {
 	render() {
 		const { nodeId, node, measurements } = this.props
 		const { loading } = this.state
+
+		// Generate MeasurementRows
+		var MeasurementRows = new Array()
+		const measurementsSettings = node.settings.measurements
+
+		for (const type in measurementsSettings) {
+			const lastMeasurement = measurements[type].lastMeasurement
+
+			const {
+				value,
+				fetching,
+				fetched,
+				error,
+				timeCreated,
+				lastFetched
+			} = lastMeasurement
+
+			const { format, tooHigh, tooLow } = measurementsSettings[type]
+
+			MeasurementRows.push(
+				<MeasurementRow
+					key={type}
+					nodeId={nodeId}
+					type={type}
+					value={value}
+					format={format}
+					tooHigh={tooHigh}
+					tooLow={tooLow}
+					fetching={fetching}
+					fetched={fetched}
+					error={error}
+					timeCreated={timeCreated}
+					lastFetched={lastFetched}
+					position={true}
+				/>
+			)
+		}
+
 		return (
 			<Card
 				style={{
@@ -83,31 +124,7 @@ class NodeCard extends Component {
 				}
 			>
 				<h3>Last measurements:</h3>
-				{Object.keys(measurements).map(type => {
-					const { value, fetched } = measurements[type].lastMeasurement
-					return (
-						<Link
-							style={{ color: 'black' }}
-							to={{
-								search: queryString.stringify({
-									nodeId,
-									type,
-									modal: 'graphview'
-								})
-							}}
-						>
-							<p key={type}>
-								<Icon type="arrows-alt" style={{ marginRight: '10px' }} />
-								{type.replace(/_/, ' ').replace(/\w\S*/g, function(txt) {
-									return (
-										txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-									)
-								})}
-								: {fetched ? value : <Icon type="loading" />}
-							</p>
-						</Link>
-					)
-				})}
+				{MeasurementRows.map(MeasurementRow => MeasurementRow)}
 			</Card>
 		)
 	}
