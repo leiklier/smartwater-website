@@ -53,6 +53,15 @@ class MeasurementRow extends Component {
 				break
 			}
 
+			case 'OPEN_CLOSED': {
+				if (value) {
+					valueDisplay = 'Closed'
+				} else {
+					valueDisplay = 'Open'
+				}
+				break
+			}
+
 			default:
 				valueDisplay = value
 			}
@@ -64,7 +73,7 @@ class MeasurementRow extends Component {
 						{valueDisplay}
 					</Text>
 				)
-			} else if (value < tooLow * 1.1 || value > tooHigh * 0.85) {
+			} else if (value < tooLow * 1.15 || value > tooHigh * 0.85) {
 				valueElement = (
 					<Text>
 						<Icon

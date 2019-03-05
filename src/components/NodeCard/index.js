@@ -114,7 +114,7 @@ class NodeCard extends Component {
 					>
 						<Title level={3}>
 							{node.name}
-							<Icon type="right-square" style={{ marginLeft: '10px' }} />
+							<Icon type="right-circle" style={{ marginLeft: '10px' }} />
 						</Title>
 					</Link>
 				}
