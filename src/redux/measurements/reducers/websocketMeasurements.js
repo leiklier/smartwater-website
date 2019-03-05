@@ -6,7 +6,11 @@ import {
 	WEBSOCKET_MEASUREMENTS_RX
 } from '../types'
 
-import { INCOMING_DATA } from '../websocketActions'
+import {
+	INCOMING_DATA,
+	ADD_SUBSCRIPTIONS_FULFILLED,
+	REMOVE_SUBSCRIPTIONS_FULFILLED
+} from '../websocketActions'
 
 export default function websocketMeasurements(state, action) {
 	switch (action.type) {
@@ -26,6 +30,16 @@ export default function websocketMeasurements(state, action) {
 		let newState = cloneDeep(state)
 
 		switch (action.payload.action) {
+		case ADD_SUBSCRIPTIONS_FULFILLED: {
+			newState.websocket.types = action.payload.types
+			break
+		}
+
+		case REMOVE_SUBSCRIPTIONS_FULFILLED: {
+			newState.websocket.types = action.payload.types
+			break
+		}
+
 		case INCOMING_DATA: {
 			const {
 				nodeId,

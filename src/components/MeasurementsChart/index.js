@@ -32,6 +32,7 @@ class MeasurementsChart extends Component {
 			<Spin
 				indicator={<Icon type="loading" style={{ fontSize: '5vw' }} spin />}
 				size="large"
+				delay={500}
 				spinning={loading}
 			>
 				<Line

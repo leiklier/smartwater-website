@@ -13,7 +13,8 @@ export default function reducer(
 		fetched: false,
 		error: null,
 		websocket: {
-			connected: false
+      connected: false,
+      types: new Object()
 		}
 	},
 	action

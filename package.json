@@ -43,8 +43,11 @@
   "dependencies": {
     "antd": "^3.12.3",
     "axios": "^0.18.0",
+    "blob": "^0.0.5",
     "chart.js": "^2.7.3",
     "connected-react-router": "^6.3.1",
+    "file-saver": "^2.0.1",
+    "json2csv": "^4.3.5",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "query-string": "^6.2.0",

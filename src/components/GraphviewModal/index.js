@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 
 import { fetchMeasurementsGraphView } from '../../redux/actions'
+import { downloadAsCsv } from '../../controllers'
 
 @connect(
 	null,
@@ -169,6 +170,21 @@ class Graphview extends Component {
 							}
 						>
 							Last 30 Days
+						</Button>
+					</Col>
+				</Row>
+				<Row type="flex" justify="space-around" align="middle">
+					<Col>
+						<Button
+							type="primary"
+							onClick={() =>
+								downloadAsCsv(
+									graphView.data,
+									`${node.name}-${type}-${fromTimestamp}-${toTimestamp}.csv`
+								)
+							}
+						>
+							Download current view
 						</Button>
 					</Col>
 				</Row>
