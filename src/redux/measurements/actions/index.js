@@ -1,6 +1,14 @@
 export { default as refreshMeasurements } from './refreshMeasurements'
 
 export {
+	default as fetchAllMeasurementsQuickView
+} from './fetchAllMeasurementsQuickView'
+
+export {
+	default as setTimestampsMeasurementsQuickView
+} from './setTimestampsMeasurementsQuickView'
+
+export {
 	default as fetchMeasurementsQuickView
 } from './fetchMeasurementsQuickView'
 

@@ -1,5 +1,6 @@
 import refreshMeasurements from './refreshMeasurements'
 
+import setTimestampsMeasurementsQuickView from './setTimestampsMeasurementsQuickView'
 import fetchMeasurementsQuickView from './fetchMeasurementsQuickView'
 import fetchMeasurementsGraphView from './fetchMeasurementsGraphView'
 import fetchMeasurementsLast from './fetchMeasurementsLast'
@@ -26,6 +27,7 @@ export default function reducer(
 ) {
 	return (
 		refreshMeasurements(state, action) ||
+		setTimestampsMeasurementsQuickView(state, action) ||
 		fetchMeasurementsQuickView(state, action) ||
 		fetchMeasurementsGraphView(state, action) ||
 		fetchMeasurementsLast(state, action) ||

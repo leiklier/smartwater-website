@@ -10,7 +10,7 @@ import {
 
 export default function fetchMeasurementsQuickView(nodeId, types = false) {
 	return (dispatch, getState) => {
-		const { measurements } = getState().measurements.measurements
+		const { measurements } = getState().measurements
 		const { fromTimestamp, toTimestamp } = getState().measurements.quickView
 
 		types = types || Object.keys(measurements[nodeId])
