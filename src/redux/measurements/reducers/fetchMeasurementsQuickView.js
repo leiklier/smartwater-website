@@ -1,22 +1,22 @@
 import { cloneDeep } from 'lodash'
 
 import {
-	FETCH_MEASUREMENTS_GRAPHVIEW,
-	FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED,
-	FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED
+	FETCH_MEASUREMENTS_QUICKVIEW,
+	FETCH_MEASUREMENTS_QUICKVIEW_FULFILLED,
+	FETCH_MEASUREMENTS_QUICKVIEW_REJECTED
 } from '../types'
 
-export default function fetchMeasurementsGraphView(state, action) {
+export default function fetchMeasurementsQuickView(state, action) {
 	switch (action.type) {
-	case FETCH_MEASUREMENTS_GRAPHVIEW: {
+	case FETCH_MEASUREMENTS_QUICKVIEW: {
 		const { nodeId, types } = action.payload
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
 			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
 
-			newState.measurements[nodeId][type].graphView = {
-				...newState.measurements[nodeId][type].graphView,
+			newState.measurements[nodeId][type].quickView = {
+				...newState.measurements[nodeId][type].quickView,
 				fetching: true,
 				fetched: false,
 				error: null
@@ -26,19 +26,16 @@ export default function fetchMeasurementsGraphView(state, action) {
 		return newState
 	}
 
-	case FETCH_MEASUREMENTS_GRAPHVIEW_FULFILLED: {
-		const { nodeId, types, data, fromTimestamp, toTimestamp } = action.payload
+	case FETCH_MEASUREMENTS_QUICKVIEW_FULFILLED: {
+		const { nodeId, types, data } = action.payload
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
 			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
 			if (!Object.keys(data).includes(type)) data[type] = new Array()
-
-			newState.measurements[nodeId][type].graphView = {
-				...newState.measurements[nodeId][type].graphView,
+			newState.measurements[nodeId][type].quickView = {
+				...newState.measurements[nodeId][type].quickView,
 				data: data[type],
-				fromTimestamp,
-				toTimestamp,
 				fetching: false,
 				fetched: true
 			}
@@ -47,15 +44,15 @@ export default function fetchMeasurementsGraphView(state, action) {
 		return newState
 	}
 
-	case FETCH_MEASUREMENTS_GRAPHVIEW_REJECTED: {
-		const { nodeId, error, types } = action.payload
+	case FETCH_MEASUREMENTS_QUICKVIEW_REJECTED: {
+		const { nodeId, types, error } = action.payload
 		let newState = cloneDeep(state)
 
 		for (const type of types) {
 			if (!Object.keys(newState.measurements[nodeId]).includes(type)) continue
 
-			newState.measurements[nodeId][type].graphView = {
-				...newState.measurements[nodeId][type].graphView,
+			newState.measurements[nodeId][type].quickView = {
+				...newState.measurements[nodeId][type].quickView,
 				fetching: false,
 				fetched: false,
 				error: error
@@ -64,7 +61,6 @@ export default function fetchMeasurementsGraphView(state, action) {
 
 		return newState
 	}
-
 	default:
 		return
 	}

@@ -1,6 +1,7 @@
 import refreshMeasurements from './refreshMeasurements'
 
-import fetchMeasurementsGraphview from './fetchMeasurementsGraphview'
+import fetchMeasurementsQuickView from './fetchMeasurementsQuickView'
+import fetchMeasurementsGraphView from './fetchMeasurementsGraphView'
 import fetchMeasurementsLast from './fetchMeasurementsLast'
 import fetchMeasurementsAggregate from './fetchMeasurementsAggregate'
 
@@ -12,16 +13,21 @@ export default function reducer(
 		fetching: false,
 		fetched: false,
 		error: null,
+		quickView: {
+			fromTimestamp: Date.now() - 1000 * 60 * 60 * 24 * 7, // Last week
+			toTimestamp: false // Realtime is default
+		},
 		websocket: {
-      connected: false,
-      types: new Object()
+			connected: false,
+			types: new Object()
 		}
 	},
 	action
 ) {
 	return (
 		refreshMeasurements(state, action) ||
-		fetchMeasurementsGraphview(state, action) ||
+		fetchMeasurementsQuickView(state, action) ||
+		fetchMeasurementsGraphView(state, action) ||
 		fetchMeasurementsLast(state, action) ||
 		fetchMeasurementsAggregate(state, action) ||
 		websocketMeasurements(state, action) ||
