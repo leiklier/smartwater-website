@@ -49,7 +49,8 @@ export default function websocketMeasurements(state, action) {
 				timeCreated
 			} = action.payload.data
 			const measurement = newState.measurements[nodeId][type]
-			let { lastMeasurement, graphView } = measurement
+			let { lastMeasurement, quickView, graphView } = measurement
+			let quickViewSettings = newState.quickView
 
 			lastMeasurement = {
 				...lastMeasurement,
@@ -58,6 +59,10 @@ export default function websocketMeasurements(state, action) {
 				lastFetched: Date.now()
 			}
 
+			if (!quickViewSettings.toTimestamp)
+			// quickView should be live updated
+				quickView.data.unshift({ position, timeCreated, value })
+
 			if (!graphView.toTimestamp)
 			// graphView should be live updated
 				graphView.data.unshift({ position, timeCreated, value })
@@ -65,6 +70,7 @@ export default function websocketMeasurements(state, action) {
 			newState.measurements[nodeId][type] = {
 				...measurement,
 				lastMeasurement,
+				quickView,
 				graphView
 			}
 			break
