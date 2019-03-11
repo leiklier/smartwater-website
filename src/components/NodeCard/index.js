@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 
 import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import { Card, Icon, Typography } from 'antd'
 const { Title } = Typography
 
-import MeasurementRow from '../MeasurementRow'
+import LastMeasurementRow from '../LastMeasurementRow'
 
 import {
 	fetchMeasurementsLast,
@@ -14,47 +13,12 @@ import {
 	unsubscribeWebsocketMeasurements
 } from '../../redux/actions'
 
-@connect(
-	null,
-	(dispatch, ownProps) => {
-		const { nodeId, measurements } = ownProps
-
-		return {
-			fetchMeasurementsLast: () => dispatch(fetchMeasurementsLast({ nodeId })),
-			subscribeMeasurements: () =>
-				dispatch(
-					subscribeWebsocketMeasurements({
-						[nodeId]: Object.keys(measurements)
-					})
-				),
-			unsubscribeMeasurements: () =>
-				dispatch(
-					unsubscribeWebsocketMeasurements({
-						[nodeId]: Object.keys(measurements)
-					})
-				)
-		}
-	}
-)
 class NodeCard extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			loading: false
 		}
-	}
-
-	componentWillMount() {
-		const { fetchMeasurementsLast, subscribeMeasurements } = this.props
-
-		subscribeMeasurements()
-		fetchMeasurementsLast()
-	}
-
-	componentWillUnmount() {
-		const { unsubscribeMeasurements } = this.props
-
-		unsubscribeMeasurements()
 	}
 
 	render() {
@@ -67,33 +31,16 @@ class NodeCard extends Component {
 		var Rows = new Object() // key=purpose
 		for (const type in measurementsSettings) {
 			const lastMeasurement = measurements[type].lastMeasurement
+			const { purpose } = measurementsSettings[type]
 
-			const {
-				value,
-				fetching,
-				fetched,
-				error,
-				timeCreated,
-				lastFetched
-			} = lastMeasurement
-
-			const { format, purpose, tooHigh, tooLow } = measurementsSettings[type]
 			if (!Rows[purpose]) Rows[purpose] = new Array()
 			Rows[purpose].push(
-				<MeasurementRow
+				<LastMeasurementRow
 					key={type}
 					nodeId={nodeId}
 					type={type}
-					value={value}
-					format={format}
-					tooHigh={tooHigh}
-					tooLow={tooLow}
-					fetching={fetching}
-					fetched={fetched}
-					error={error}
-					timeCreated={timeCreated}
-					lastFetched={lastFetched}
-					position={true}
+					lastMeasurement={lastMeasurement}
+					measurementSettings={measurementsSettings[type]}
 				/>
 			)
 		}
@@ -128,10 +75,10 @@ class NodeCard extends Component {
 				}
 			>
 				<Title level={4}>Status:</Title>
-				{Rows.STATUS.map(MeasurementRow => MeasurementRow)}
+				{Rows.STATUS.map(LastMeasurementRow => LastMeasurementRow)}
 
 				<Title level={4}>Last measurements:</Title>
-				{Rows.SENSOR.map(MeasurementRow => MeasurementRow)}
+				{Rows.SENSOR.map(LastMeasurementRow => LastMeasurementRow)}
 			</Card>
 		)
 	}

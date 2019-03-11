@@ -6,26 +6,44 @@ import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import TimeAgo from 'react-timeago'
 
-class MeasurementRow extends Component {
+import { connect } from 'react-redux'
+
+import { fetchMeasurementsLast } from '../../redux/actions'
+
+@connect(
+	null,
+	(dispatch, ownProps) => {
+		const { nodeId, type } = ownProps
+
+		return {
+			fetchMeasurementLast: () =>
+				dispatch(fetchMeasurementsLast({ nodeId, types: [type] }))
+		}
+	}
+)
+class LastMeasurementRow extends Component {
 	constructor(props) {
 		super(props)
 	}
 
+	componentWillMount() {
+		const { fetching, fetched } = this.props.lastMeasurement
+		if (!fetching && !fetched) this.props.fetchMeasurementLast()
+	}
+
 	render() {
+		const { nodeId, type, lastMeasurement, measurementSettings } = this.props
+
 		const {
-			nodeId,
-			type,
 			value,
-			format,
-			tooHigh,
-			tooLow,
 			fetching,
 			fetched,
 			error,
 			timeCreated,
-			lastFetched,
-			position
-		} = this.props
+			lastFetched
+		} = this.props.lastMeasurement
+
+		const { format, purpose, tooHigh, tooLow } = measurementSettings
 
 		var valueDisplay, valueElement
 		if (fetching) {
@@ -33,37 +51,37 @@ class MeasurementRow extends Component {
 			valueElement = valueDisplay
 		} else if (fetched && value !== false) {
 			switch (format) {
-			case 'PERCENTAGE': {
-				valueDisplay = `${value * 100}%`
-				break
-			}
-
-			case 'DEGREES_CELCIUS': {
-				valueDisplay = `${value}°C`
-				break
-			}
-
-			case 'INTEGER': {
-				valueDisplay = Math.round(value)
-				break
-			}
-
-			case 'FLOAT': {
-				valueDisplay = value.toFixed(2) // keep only two decimals
-				break
-			}
-
-			case 'OPEN_CLOSED': {
-				if (value) {
-					valueDisplay = 'Closed'
-				} else {
-					valueDisplay = 'Open'
+				case 'PERCENTAGE': {
+					valueDisplay = `${value * 100}%`
+					break
 				}
-				break
-			}
 
-			default:
-				valueDisplay = value
+				case 'DEGREES_CELCIUS': {
+					valueDisplay = `${value}°C`
+					break
+				}
+
+				case 'INTEGER': {
+					valueDisplay = Math.round(value)
+					break
+				}
+
+				case 'FLOAT': {
+					valueDisplay = value.toFixed(2) // keep only two decimals
+					break
+				}
+
+				case 'OPEN_CLOSED': {
+					if (value) {
+						valueDisplay = 'Closed'
+					} else {
+						valueDisplay = 'Open'
+					}
+					break
+				}
+
+				default:
+					valueDisplay = value
 			}
 
 			if (value < tooLow || value > tooHigh) {
@@ -136,4 +154,4 @@ class MeasurementRow extends Component {
 	}
 }
 
-export default MeasurementRow
+export default LastMeasurementRow
