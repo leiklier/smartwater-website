@@ -6,11 +6,17 @@ import { connect } from 'react-redux'
 import { Layout, PageHeader, Icon, Button } from 'antd'
 const { Header, Content } = Layout
 
-import SettingsBar from './components/SettingsBar'
+import QuickviewDatePicker from './components/QuickviewDatePicker'
+import ToggleModeButton from './components/ToggleModeButton'
+import NodeSettingsButton from './components/NodeSettingsButton'
 
 import MeasurementCard from '../../../components/MeasurementCard'
 @connect(
-	null,
+	store => {
+		return {
+			mode: store.sites.nodeview.mode
+		}
+	},
 	dispatch => {
 		return {
 			handleGoBack: () => {
@@ -29,7 +35,7 @@ class Nodeview extends Component {
 		super(props)
 	}
 	render() {
-		const { nodeId, node, measurements, handleGoBack } = this.props
+		const { nodeId, node, measurements, handleGoBack, mode } = this.props
 		return (
 			<Layout>
 				<PageHeader
@@ -38,7 +44,11 @@ class Nodeview extends Component {
 					onBack={() => {
 						handleGoBack()
 					}}
-					extra={[<SettingsBar key={1} />]}
+					extra={[
+						mode === 'quickview' ? <QuickviewDatePicker /> : '',
+						<ToggleModeButton />,
+						<NodeSettingsButton />
+					]}
 				/>
 				<Content>
 					{Object.keys(measurements).map(type => {
