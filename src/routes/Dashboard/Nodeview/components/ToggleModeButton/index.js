@@ -28,7 +28,7 @@ class ToggleModeButton extends Component {
 		var buttonIconType = modeToIconType(mode)
 
 		return (
-			<Button onClick={() => cycleMode()} ghost>
+			<Button onClick={() => cycleMode()}>
 				<Icon type={buttonIconType} />
 			</Button>
 		)

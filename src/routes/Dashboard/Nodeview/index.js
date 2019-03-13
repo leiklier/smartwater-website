@@ -3,8 +3,10 @@ import React, { Component } from 'react'
 import { goBack } from 'connected-react-router'
 import { connect } from 'react-redux'
 
-import { Layout, Icon, Button } from 'antd'
+import { Layout, PageHeader, Icon, Button } from 'antd'
 const { Header, Content } = Layout
+
+import SettingsBar from './components/SettingsBar'
 
 import MeasurementCard from '../../../components/MeasurementCard'
 @connect(
@@ -30,29 +32,21 @@ class Nodeview extends Component {
 		const { nodeId, node, measurements, handleGoBack } = this.props
 		return (
 			<Layout>
-				<Header>
-					<Button
-						onClick={handleGoBack}
-						style={{ marginRight: '15px' }}
-						type="secondary"
-						ghost
-					>
-						<Icon
-							type="left"
-							style={{ marginLeft: '15px', marginRight: '10px' }}
-						/>
-						Back to Overview
-					</Button>
-					<h2 style={{ color: 'white', display: 'inline-block' }}>
-						{node.name}
-					</h2>
-				</Header>
+				<PageHeader
+					title="Nodeview"
+					subTitle={node.name}
+					onBack={() => {
+						handleGoBack()
+					}}
+					extra={[<SettingsBar key={1} />]}
+				/>
 				<Content>
 					{Object.keys(measurements).map(type => {
 						return (
 							<MeasurementCard
 								key={nodeId + type}
 								nodeId={nodeId}
+								node={node}
 								type={type}
 								measurement={measurements[type]}
 							/>

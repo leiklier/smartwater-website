@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
-import { Layout, Icon } from 'antd'
-const { Header, Content } = Layout
+import { Layout, Icon, PageHeader } from 'antd'
+const { Content } = Layout
 
 import NodeCard from '../../../components/NodeCard'
 
@@ -13,9 +13,7 @@ class Overview extends Component {
 		const { nodes, measurements } = this.props
 		return (
 			<Layout>
-				<Header>
-					<h2 style={{ color: 'white', display: 'inline-block' }}>Overview</h2>
-				</Header>
+				<PageHeader title="Overview" />
 				<Content>
 					{Object.keys(measurements).map(nodeId => {
 						return (
