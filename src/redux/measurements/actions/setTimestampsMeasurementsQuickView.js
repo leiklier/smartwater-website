@@ -1,6 +1,6 @@
 import { SET_TIMESTAMPS_MEASUREMENTS_QUICKVIEW } from '../types'
 
-import { fetchAllMeasurementsQuickView } from '.'
+import { refetchAllMeasurementsQuickView } from '.'
 
 export default function setTimestampsMeasurementsQuickView(
 	fromTimestamp,
@@ -14,6 +14,6 @@ export default function setTimestampsMeasurementsQuickView(
 				toTimestamp
 			}
 		})
-		dispatch(fetchAllMeasurementsQuickView())
+		dispatch(refetchAllMeasurementsQuickView())
 	}
 }
