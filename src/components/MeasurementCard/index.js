@@ -44,7 +44,9 @@ class MeasurementCard extends Component {
 			case 'quickview': {
 				mainContent = (
 					<MeasurementsChart
-						measurementsCollection={[{ name: node.name, data: quickView.data }]}
+						measurementsCollection={[
+							{ nodeName: node.name, data: quickView.data }
+						]}
 						loading={quickView.fetching}
 					/>
 				)
