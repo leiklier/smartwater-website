@@ -30,7 +30,7 @@ export default function createMeasurementElement() {
 
 	var graphView = {
 		data: new Array(),
-		fromTimestamp: Date.now() - 1000 * 60 * 60 * 24,
+		fromTimestamp: Date.now() - 1000 * 60 * 60 * 24 * 7,
 		toTimestamp: false,
 		fetching: false,
 		fetched: false,
