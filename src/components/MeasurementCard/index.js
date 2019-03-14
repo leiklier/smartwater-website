@@ -1,53 +1,24 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { Link } from 'react-router-dom'
-import queryString from 'query-string'
-import { Card, Icon, Typography } from 'antd'
-const { Text, Title } = Typography
+import { Card } from 'antd'
 
-import {
-	fetchMeasurementsLast,
-	fetchMeasurementsAggregate
-} from '../../redux/actions'
+import LastMeasurementRow from '../LastMeasurementRow'
+import MeasurementsChart from '../MeasurementsChart'
+
+import { fetchMeasurementsQuickView } from '../../redux/actions'
 
 @connect(
-	null,
-	(dispatch, ownProps) => {
-		const { nodeId, type, measurement } = ownProps
-		const { aggregates } = measurement
+	store => {
 		return {
-			initializeStore: () => {
-				dispatch(
-					fetchMeasurementsLast({
-						nodeId,
-						types: [type]
-					})
-				)
-				for (const intervalName in aggregates) {
-					for (const aggregate in aggregates[intervalName]) {
-						if (aggregate !== 'duration' && aggregate !== 'textDisplay') {
-							dispatch(
-								fetchMeasurementsAggregate(nodeId, aggregate, intervalName, [
-									type
-								])
-							)
-						}
-					}
-				}
-			},
-			fetchAggregates: () => {
-				for (const intervalName in aggregates) {
-					for (const aggregate in aggregates[intervalName]) {
-						if (aggregate !== 'duration' && aggregate !== 'textDisplay') {
-							dispatch(
-								fetchMeasurementsAggregate(nodeId, aggregate, intervalName, [
-									type
-								])
-							)
-						}
-					}
-				}
+			mode: store.sites.nodeview.mode
+		}
+	},
+	(dispatch, ownProps) => {
+		const { nodeId, type } = ownProps
+		return {
+			fetchQuickView: () => {
+				dispatch(fetchMeasurementsQuickView(nodeId, [type]))
 			}
 		}
 	}
@@ -55,30 +26,40 @@ import {
 class MeasurementCard extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			loading: false,
-			aggregateIntervalId: false,
-			aggregateIntervalDelay: 30 * 1000
-		}
 	}
 
-	componentWillMount() {
-		this.props.initializeStore()
-		var aggregateIntervalId = setInterval(
-			this.props.fetchAggregates,
-			this.state.aggregateIntervalDelay
-		)
-		this.setState({ aggregateIntervalId })
-	}
-	componentWillUnmount() {
-		clearInterval(this.state.aggregateIntervalId)
+	componentDidMount() {
+		const { measurement, fetchQuickView } = this.props
+		const { quickView } = measurement
+		if (!quickView.fetched && !quickView.fetching) fetchQuickView()
 	}
 
 	render() {
-		const { nodeId, type, measurement } = this.props
-		const { lastMeasurement } = measurement
+		const { mode, nodeId, node, type, measurement } = this.props
+		const { lastMeasurement, quickView } = measurement
+		const measurementSettings = node.settings.measurements[type]
 
-		const { loading } = this.state
+		var mainContent
+		switch (mode) {
+			case 'quickview': {
+				mainContent = (
+					<MeasurementsChart
+						measurementsCollection={[{ name: node.name, data: quickView.data }]}
+						loading={quickView.fetching}
+					/>
+				)
+				break
+			}
+
+			case 'aggregatesTable': {
+				mainContent = 'Aggregates are yet to be implemented'
+				break
+			}
+
+			default: {
+				mainContent = 'Something went wrong'
+			}
+		}
 
 		return (
 			<Card
@@ -88,70 +69,15 @@ class MeasurementCard extends Component {
 					marginTop: '10px',
 					display: 'inline-block'
 				}}
-				title={
-					<Link
-						to={{
-							search: queryString.stringify({
-								site: 'nodeview',
-								nodeId,
-								type,
-								modal: 'graphview'
-							})
-						}}
-					>
-						<Title level={3}>
-							<Icon type="arrows-alt" style={{ marginRight: '10px' }} />
-							{type.replace(/_/, ' ').replace(/\w\S*/g, function(txt) {
-								return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-							})}
-						</Title>
-					</Link>
-				}
-				loading={loading}
-				extra={
-					<Link
-						to={{
-							search: queryString.stringify({ site: 'settings', nodeId, type })
-						}}
-					>
-						<Icon type="setting" />
-					</Link>
-				}
 			>
-				<p>
-					Last measurement:{' '}
-					{lastMeasurement.fetched ? (
-						lastMeasurement.value
-					) : (
-						<Icon type="loading" />
-					)}
-				</p>
-				<h3>Aggregates:</h3>
-				{Object.keys(measurement.aggregates).map(intervalName => {
-					return (
-						<div key={intervalName}>
-							<h4>{measurement.aggregates[intervalName].textDisplay}</h4>
-							{Object.keys(measurement.aggregates[intervalName]).map(
-								aggregate => {
-									if (aggregate !== 'duration' && aggregate !== 'textDisplay') {
-										const aggregateData =
-											measurement.aggregates[intervalName][aggregate]
-										return (
-											<span key={intervalName + aggregate}>
-												{aggregate}:{' '}
-												{aggregateData.fetched ? (
-													aggregateData.value
-												) : (
-													<Icon type="loading" />
-												)}
-											</span>
-										)
-									} else return ''
-								}
-							)}
-						</div>
-					)
-				})}
+				{/*This will be the "title" of the card*/}
+				<LastMeasurementRow
+					nodeId={nodeId}
+					type={type}
+					lastMeasurement={lastMeasurement}
+					measurementSettings={measurementSettings}
+				/>
+				{mainContent}
 			</Card>
 		)
 	}
