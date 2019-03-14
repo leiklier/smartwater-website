@@ -55,6 +55,8 @@ export default function websocketMeasurements(state, action) {
 			lastMeasurement = {
 				...lastMeasurement,
 				value,
+				fetched: true,
+				error: null,
 				timeCreated,
 				lastFetched: Date.now()
 			}
