@@ -1,23 +1,43 @@
 import React, { Component } from 'react'
 
-import { Row, Col, Icon, Typography } from 'antd'
+import { Row, Col, Icon, Typography, Button } from 'antd'
 const { Text } = Typography
 import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import TimeAgo from 'react-timeago'
 
 import { connect } from 'react-redux'
+import { push } from 'connected-react-router'
 
 import { fetchMeasurementsLast } from '../../redux/actions'
 
+import { valueToIcon, formatValue, wrapTypeWithLink } from './controllers'
+import { formatType } from '../../controllers'
+
 @connect(
-	null,
+	store => {
+		return {
+			site: queryString.parse(store.router.search).site
+		}
+	},
 	(dispatch, ownProps) => {
 		const { nodeId, type } = ownProps
 
 		return {
 			fetchMeasurementLast: () =>
-				dispatch(fetchMeasurementsLast({ nodeId, types: [type] }))
+				dispatch(fetchMeasurementsLast({ nodeId, types: [type] })),
+			openGraphview: site => {
+				dispatch(
+					push({
+						search: queryString.stringify({
+							nodeId,
+							type,
+							site,
+							modal: 'graphview'
+						})
+					})
+				)
+			}
 		}
 	}
 )
@@ -32,7 +52,14 @@ class LastMeasurementRow extends Component {
 	}
 
 	render() {
-		const { nodeId, type, lastMeasurement, measurementSettings } = this.props
+		const {
+			site,
+			nodeId,
+			type,
+			lastMeasurement,
+			measurementSettings,
+			openGraphview
+		} = this.props
 
 		const {
 			value,
@@ -45,109 +72,42 @@ class LastMeasurementRow extends Component {
 
 		const { format, purpose, tooHigh, tooLow } = measurementSettings
 
-		var valueDisplay, valueElement
-		if (fetching) {
-			valueDisplay = <Icon type="loading" />
-			valueElement = valueDisplay
-		} else if (fetched && value !== false) {
-			switch (format) {
-				case 'PERCENTAGE': {
-					valueDisplay = `${value * 100}%`
-					break
-				}
+		const statusIcon = valueToIcon(value, fetching, tooLow, tooHigh)
+		const formattedType = formatType(type)
 
-				case 'DEGREES_CELCIUS': {
-					valueDisplay = `${value}°C`
-					break
-				}
-
-				case 'INTEGER': {
-					valueDisplay = Math.round(value)
-					break
-				}
-
-				case 'FLOAT': {
-					valueDisplay = value.toFixed(2) // keep only two decimals
-					break
-				}
-
-				case 'OPEN_CLOSED': {
-					if (value) {
-						valueDisplay = 'Closed'
-					} else {
-						valueDisplay = 'Open'
-					}
-					break
-				}
-
-				default:
-					valueDisplay = value
-			}
-
-			if (value < tooLow || value > tooHigh) {
-				valueElement = (
-					<Text>
-						<Icon type="close-circle" theme="twoTone" twoToneColor="#f5222d" />
-						{valueDisplay}
-					</Text>
-				)
-			} else if (value < tooLow * 1.15 || value > tooHigh * 0.85) {
-				valueElement = (
-					<Text>
-						<Icon
-							type="exclamation-circle"
-							theme="twoTone"
-							twoToneColor="#faad14"
-						/>
-						{valueDisplay}
-					</Text>
-				)
-			} else {
-				valueElement = (
-					<Text>
-						<Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />
-						{valueDisplay}
-					</Text>
-				)
-			}
-		} else {
-			valueDisplay = 'Never received'
-			valueElement = (
-				<Text type="danger" underline strong>
-					<i>{valueDisplay}</i>
-				</Text>
-			)
-		}
-
-		const typeDisplay = type.replace(/_/, ' ').replace(/\w\S*/g, function(txt) {
-			return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-		})
+		var formattedValue = 'Not received'
+		if (fetched && value !== false) formattedValue = formatValue(value, format)
 
 		return (
-			<Row>
-				<Col span={10}>
-					<Link
-						to={{
-							search: queryString.stringify({
-								nodeId,
-								type,
-								modal: 'graphview'
-							})
-						}}
-					>
-						<Text>
-							<Icon type="arrows-alt" />
-							{typeDisplay}
-						</Text>
-					</Link>
+			<Row type="flex" justify="space-around" align="middle">
+				<Col span={12}>
+					<Row>
+						<Col span={24}>
+							<Text>{formattedType}</Text>
+						</Col>
+					</Row>
+					<Row type="flex" justify="left">
+						<Col span={6}>{statusIcon}</Col>
+						<Col span={18}>
+							<Row>
+								<Col span={24}>
+									<Text strong>{formattedValue}</Text>
+								</Col>
+							</Row>
+							<Row>
+								<Col span={24}>
+									<Text>
+										<TimeAgo date={timeCreated} />
+									</Text>
+								</Col>
+							</Row>
+						</Col>
+					</Row>
 				</Col>
-				<Col span={6}>
-					<Text>{valueElement}</Text>
-				</Col>
-				<Col span={6}>
-					<Text>
-						<TimeAgo date={timeCreated} />
-					</Text>
+				<Col span={4}>
+					<Button onClick={() => openGraphview(site)}>
+						<Icon type="arrows-alt" style={{ fontSize: '24px' }} />
+					</Button>
 				</Col>
 			</Row>
 		)

@@ -2,16 +2,12 @@ import React, { Component } from 'react'
 
 import { Link } from 'react-router-dom'
 import queryString from 'query-string'
-import { Card, Icon, Typography } from 'antd'
+import { Card, Button, Icon, Typography } from 'antd'
 const { Title } = Typography
 
 import LastMeasurementRow from '../LastMeasurementRow'
 
-import {
-	fetchMeasurementsLast,
-	subscribeWebsocketMeasurements,
-	unsubscribeWebsocketMeasurements
-} from '../../redux/actions'
+import { fetchMeasurementsLast } from '../../redux/actions'
 
 class NodeCard extends Component {
 	constructor(props) {
@@ -67,11 +63,9 @@ class NodeCard extends Component {
 				}
 				loading={loading}
 				extra={
-					<Link
-						to={{ search: queryString.stringify({ site: 'settings', nodeId }) }}
-					>
+					<Button>
 						<Icon type="setting" />
-					</Link>
+					</Button>
 				}
 			>
 				<Title level={4}>Status:</Title>
