@@ -119,6 +119,7 @@ class Dashboard extends Component {
 				<Nodeview
 					nodeId={nodeId}
 					node={nodes[nodeId]}
+					nodes={nodes}
 					measurements={measurements[nodeId]}
 				/>
 			)
