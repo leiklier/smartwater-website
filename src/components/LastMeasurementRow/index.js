@@ -17,22 +17,22 @@ import { formatType } from '../../controllers'
 @connect(
 	store => {
 		return {
-			site: queryString.parse(store.router.search).site
+			site: queryString.parse(store.router.location.search).site
 		}
 	},
 	(dispatch, ownProps) => {
-		const { nodeId, type } = ownProps
+		const { site, nodeId, type } = ownProps
 
 		return {
 			fetchMeasurementLast: () =>
 				dispatch(fetchMeasurementsLast({ nodeId, types: [type] })),
-			openGraphview: site => {
+			openGraphview: () => {
 				dispatch(
 					push({
 						search: queryString.stringify({
+							site: site,
 							nodeId,
 							type,
-							site,
 							modal: 'graphview'
 						})
 					})
@@ -53,7 +53,6 @@ class LastMeasurementRow extends Component {
 
 	render() {
 		const {
-			site,
 			nodeId,
 			type,
 			lastMeasurement,
@@ -72,7 +71,7 @@ class LastMeasurementRow extends Component {
 
 		const { format, purpose, tooHigh, tooLow } = measurementSettings
 
-		const statusIcon = valueToIcon(value, fetching, tooLow, tooHigh)
+		const statusIcon = valueToIcon(value, format, fetching, tooLow, tooHigh)
 		const formattedType = formatType(type)
 
 		var formattedValue = 'Not received'
@@ -105,7 +104,7 @@ class LastMeasurementRow extends Component {
 					</Row>
 				</Col>
 				<Col span={4}>
-					<Button onClick={() => openGraphview(site)}>
+					<Button onClick={() => openGraphview()}>
 						<Icon type="arrows-alt" style={{ fontSize: '24px' }} />
 					</Button>
 				</Col>
