@@ -5,6 +5,7 @@ import { Card } from 'antd'
 
 import LastMeasurementRow from '../LastMeasurementRow'
 import MeasurementsChart from '../MeasurementsChart'
+import AggregatesMeasurementTable from '../AggregatesMeasurementTable'
 
 import { fetchMeasurementsQuickView } from '../../redux/actions'
 
@@ -38,6 +39,7 @@ class MeasurementCard extends Component {
 		const { mode, nodeId, node, type, measurement } = this.props
 		const { lastMeasurement, quickView } = measurement
 		const measurementSettings = node.settings.measurements[type]
+		const aggregates = measurement.aggregates
 
 		var mainContent
 		switch (mode) {
@@ -54,7 +56,14 @@ class MeasurementCard extends Component {
 			}
 
 			case 'aggregatesTable': {
-				mainContent = 'Aggregates are yet to be implemented'
+				mainContent = (
+					<AggregatesMeasurementTable
+						nodeId={nodeId}
+						type={type}
+						measurementSettings={measurementSettings}
+						aggregates={aggregates}
+					/>
+				)
 				break
 			}
 

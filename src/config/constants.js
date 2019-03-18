@@ -19,16 +19,13 @@ export const apiConfig = {
 }
 
 export const MEASUREMENT_INTERVALS = {
-	lastHour: {
-		duration: 1000 * 60 * 60,
-		textDisplay: 'Last Hour'
-	},
 	lastDay: {
-		duration: 1000 * 60 * 60 * 24,
-		textDisplay: 'Last Day'
+		duration: 1000 * 60 * 60 * 24
 	},
 	lastWeek: {
-		duration: 1000 * 60 * 60 * 24 * 7,
-		textDisplay: 'Last Week'
+		duration: 1000 * 60 * 60 * 24 * 7
+	},
+	lastMonth: {
+		duration: 1000 * 60 * 60 * 24 * 30
 	}
 }

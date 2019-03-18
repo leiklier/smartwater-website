@@ -11,8 +11,8 @@ import { push } from 'connected-react-router'
 
 import { fetchMeasurementsLast } from '../../redux/actions'
 
-import { valueToIcon, formatValue, wrapTypeWithLink } from './controllers'
-import { formatType } from '../../controllers'
+import { valueToIcon, wrapTypeWithLink } from './controllers'
+import { formatType, formatValue } from '../../controllers'
 
 @connect(
 	store => {

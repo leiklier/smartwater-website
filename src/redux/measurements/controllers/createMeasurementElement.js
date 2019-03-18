@@ -7,8 +7,7 @@ export default function createMeasurementElement() {
 	var aggregates = new Object()
 	for (const interval in MEASUREMENT_INTERVALS) {
 		aggregates[interval] = {
-			duration: MEASUREMENT_INTERVALS[interval].duration,
-			textDisplay: MEASUREMENT_INTERVALS[interval].textDisplay
+			duration: MEASUREMENT_INTERVALS[interval].duration
 		}
 		for (const valid_aggregate of VALID_AGGREGATES) {
 			aggregates[interval][valid_aggregate] = {
